@@ -1,2 +1,2 @@
 # Sustituye XXXXXXXXXXXXXXXX por tu pub-id de AdSense (sin guiones)
-google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+google.com, pub-4034071650788251, DIRECT, f08c47fec0942fa0
