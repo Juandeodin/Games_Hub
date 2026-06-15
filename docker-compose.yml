@@ -22,3 +22,5 @@ services:
     # Vigila solo el contenedor "juegos-juan" para no tocar otros de CasaOS
     command: --interval 300 juegos-juan
     restart: unless-stopped
+    healthcheck:
+      disable: true
