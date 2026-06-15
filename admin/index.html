@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Juegos de Juan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --negro:    #111111;
+      --morado:   #7c3aed;
+      --amarillo: #ffe135;
+      --verde:    #00c853;
+      --rojo:     #ff3b3b;
+      --azul:     #1e90ff;
+      --blanco:   #ffffff;
+      --fondo:    #fffbe6;
+      --borde:    4px solid var(--negro);
+      --shadow:   6px 6px 0 var(--negro);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--fondo);
+      font-family: 'Fredoka', sans-serif;
+      color: var(--negro);
+      min-height: 100vh;
+      padding: 32px 20px 60px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    /* ── Header ──────────────────────────────── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .logo-admin {
+      width: 60px; height: 60px;
+      background: var(--morado);
+      border: var(--borde);
+      border-radius: 50%;
+      box-shadow: var(--shadow);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      color: var(--blanco);
+      letter-spacing: 1px;
+      flex-shrink: 0;
+    }
+
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      text-shadow: 3px 3px 0 var(--morado);
+    }
+
+    .sub { font-size: .9rem; color: #666; }
+
+    /* ── Tarjetas ─────────────────────────────── */
+    .card {
+      background: var(--blanco);
+      border: var(--borde);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Login ─────────────────────────────────── */
+    .field { margin-bottom: 16px; }
+    label.label { display: block; font-weight: 600; margin-bottom: 6px; }
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      border: var(--borde);
+      border-radius: 10px;
+      padding: 10px 14px;
+      box-shadow: 3px 3px 0 var(--negro);
+      outline: none;
+      background: #fafafa;
+    }
+    input:focus { border-color: var(--morado); }
+
+    /* ── Botones ─────────────────────────────── */
+    .btn {
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      padding: 10px 22px;
+      border: var(--borde);
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--negro);
+      transition: transform .1s, box-shadow .1s;
+    }
+    .btn:hover  { transform: translateY(-2px); box-shadow: 6px 6px 0 var(--negro); }
+    .btn:active { transform: translate(4px,4px); box-shadow: none; }
+    .btn-primary  { background: var(--morado); color: var(--blanco); }
+    .btn-approve  { background: var(--verde); color: var(--blanco); font-size: .95rem; padding: 7px 16px; }
+    .btn-reject   { background: var(--rojo);  color: var(--blanco); font-size: .95rem; padding: 7px 16px; }
+    .btn-logout   { background: #eee; color: var(--negro); font-size: .9rem; padding: 6px 14px; }
+    .btn-full { width: 100%; }
+
+    /* ── Lista de sugerencias ─────────────────── */
+    #list { display: flex; flex-direction: column; gap: 16px; }
+
+    .suggestion-item {
+      background: var(--blanco);
+      border: var(--borde);
+      border-radius: 14px;
+      box-shadow: 5px 5px 0 var(--negro);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .s-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+    .cat-badge {
+      font-family: 'Bangers', cursive;
+      font-size: .85rem;
+      letter-spacing: 1px;
+      padding: 2px 10px;
+      border: 3px solid var(--negro);
+      border-radius: 6px;
+      box-shadow: 2px 2px 0 var(--negro);
+    }
+    .cat-suave   { background: var(--amarillo); color: var(--negro); }
+    .cat-fiesta  { background: var(--azul);     color: var(--blanco); }
+    .cat-picante { background: var(--rojo);     color: var(--blanco); }
+
+    .s-date { font-size: .8rem; color: #888; margin-left: auto; }
+
+    .s-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--negro);
+      line-height: 1.4;
+    }
+
+    .s-actions { display: flex; gap: 10px; }
+
+    /* ── Estados ─────────────────────────────── */
+    #status {
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: .95rem;
+      display: none;
+      margin-bottom: 16px;
+    }
+    #status.ok    { background: #d1fae5; color: #065f46; border: 3px solid var(--verde); display: block; }
+    #status.error { background: #fee2e2; color: #991b1b; border: 3px solid var(--rojo);  display: block; }
+
+    .empty {
+      text-align: center;
+      padding: 32px;
+      font-size: 1.1rem;
+      color: #888;
+    }
+
+    /* ── Toolbar ─────────────────────────────── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .toolbar h2 {
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    .back-link {
+      font-weight: 600;
+      color: var(--morado);
+      text-decoration: none;
+      font-size: .9rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <div class="logo-admin">JJ</div>
+      <div>
+        <h1>Panel de moderación</h1>
+        <p class="sub">Aprueba o rechaza las frases enviadas por los usuarios</p>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="section-login" class="card">
+      <div class="field">
+        <label class="label" for="token-input">Token de administrador</label>
+        <input type="password" id="token-input" placeholder="••••••••••" autocomplete="current-password" />
+      </div>
+      <div id="login-error" style="color:var(--rojo);font-weight:600;margin-bottom:12px;display:none"></div>
+      <button class="btn btn-primary btn-full" onclick="Admin.login()">🔐 Entrar</button>
+    </div>
+
+    <!-- PANEL -->
+    <div id="section-panel" style="display:none">
+      <div class="toolbar">
+        <h2>Sugerencias pendientes <span id="pending-count"></span></h2>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn btn-primary" onclick="Admin.load()" style="font-size:.9rem;padding:7px 16px">
+            🔄 Recargar
+          </button>
+          <button class="btn btn-logout" onclick="Admin.logout()">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <div id="status"></div>
+      <div id="list"></div>
+      <a href="../index.html" class="back-link">← Volver al hub</a>
+    </div>
+
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    const STORAGE_KEY = 'jj_admin_token';
+    let token = '';
+
+    function showStatus(msg, type) {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = type; // 'ok' | 'error'
+      setTimeout(() => { el.style.display = 'none'; el.className = ''; }, 4000);
+    }
+
+    async function login() {
+      const input = document.getElementById('token-input');
+      const err   = document.getElementById('login-error');
+      token = input.value.trim();
+      err.style.display = 'none';
+
+      if (!token) { err.textContent = 'Introduce el token.'; err.style.display = 'block'; return; }
+
+      // Verificar el token haciendo una llamada real
+      const res = await fetch('/api/admin/sugerencias', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).catch(() => null);
+
+      if (!res || res.status === 401) {
+        err.textContent = 'Token incorrecto.';
+        err.style.display = 'block';
+        token = '';
+        return;
+      }
+
+      sessionStorage.setItem(STORAGE_KEY, token);
+      document.getElementById('section-login').style.display  = 'none';
+      document.getElementById('section-panel').style.display  = 'block';
+      renderList(await res.json());
+    }
+
+    async function load() {
+      const res = await fetch('/api/admin/sugerencias', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).catch(() => null);
+
+      if (!res) { showStatus('Error de red.', 'error'); return; }
+      if (res.status === 401) { logout(); return; }
+      renderList(await res.json());
+    }
+
+    function renderList(items) {
+      const list = document.getElementById('list');
+      const count = document.getElementById('pending-count');
+      count.textContent = items.length ? `(${items.length})` : '';
+
+      if (items.length === 0) {
+        list.innerHTML = '<div class="empty">🎉 No hay frases pendientes</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.id = `item-${item.id}`;
+
+        const catClass = { suave: 'cat-suave', fiesta: 'cat-fiesta', picante: 'cat-picante' }[item.categoria] || '';
+        const catEmoji = { suave: '🍺', fiesta: '🎉', picante: '🔥' }[item.categoria] || '';
+        const fecha = new Date(item.creada).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
+
+        const header = document.createElement('div');
+        header.className = 's-header';
+        const badge = document.createElement('span');
+        badge.className = `cat-badge ${catClass}`;
+        badge.textContent = `${catEmoji} ${item.categoria.toUpperCase()}`;
+        const date = document.createElement('span');
+        date.className = 's-date';
+        date.textContent = fecha;
+        header.appendChild(badge);
+        header.appendChild(date);
+
+        const text = document.createElement('p');
+        text.className = 's-text';
+        text.textContent = 'Yo nunca he ' + item.texto; // textContent → sin XSS
+
+        const actions = document.createElement('div');
+        actions.className = 's-actions';
+
+        const btnA = document.createElement('button');
+        btnA.className = 'btn btn-approve';
+        btnA.textContent = '✅ Aprobar';
+        btnA.onclick = () => moderate(item.id, 'aprobar', div);
+
+        const btnR = document.createElement('button');
+        btnR.className = 'btn btn-reject';
+        btnR.textContent = '❌ Rechazar';
+        btnR.onclick = () => moderate(item.id, 'rechazar', div);
+
+        actions.appendChild(btnA);
+        actions.appendChild(btnR);
+
+        div.appendChild(header);
+        div.appendChild(text);
+        div.appendChild(actions);
+        list.appendChild(div);
+      });
+    }
+
+    async function moderate(id, action, itemEl) {
+      const res = await fetch(`/api/admin/sugerencias/${id}/${action}`, {
+        method:  'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).catch(() => null);
+
+      if (!res) { showStatus('Error de red.', 'error'); return; }
+      if (!res.ok) { showStatus('Error al procesar.', 'error'); return; }
+
+      showStatus(action === 'aprobar' ? '✅ Frase aprobada' : '❌ Frase rechazada', 'ok');
+      itemEl.style.transition = 'opacity .3s';
+      itemEl.style.opacity = '0';
+      setTimeout(() => itemEl.remove(), 300);
+
+      const remaining = document.querySelectorAll('.suggestion-item').length - 1;
+      const count = document.getElementById('pending-count');
+      count.textContent = remaining ? `(${remaining})` : '';
+      if (remaining === 0) {
+        document.getElementById('list').innerHTML = '<div class="empty">🎉 No hay frases pendientes</div>';
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem(STORAGE_KEY);
+      token = '';
+      document.getElementById('section-login').style.display  = 'block';
+      document.getElementById('section-panel').style.display  = 'none';
+      document.getElementById('token-input').value = '';
+    }
+
+    // Auto-login si hay token en sesión
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        token = saved;
+        document.getElementById('section-login').style.display = 'none';
+        document.getElementById('section-panel').style.display = 'block';
+        load();
+      }
+      document.getElementById('token-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') login();
+      });
+    });
+
+    window.Admin = { login, load, logout };
+  }());
+  </script>
+</body>
+</html>

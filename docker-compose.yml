@@ -6,21 +6,41 @@ services:
     ports:
       - "8080:80"         # Cambia 8080 por el puerto que quieras en CasaOS
     restart: unless-stopped
+    depends_on:
+      - juegos-api
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost/"]
       interval: 30s
       timeout: 5s
       retries: 3
 
+  juegos-api:
+    image: ghcr.io/juandeodin/juegos-juan-api:latest
+    container_name: juegos-api
+    environment:
+      # ⚠️  Cambia este token por uno secreto antes de desplegar en producción
+      - ADMIN_TOKEN=cambia-esto-por-un-token-secreto
+      - DB_PATH=/data/frases.db
+    volumes:
+      - juegos-db:/data   # Persiste la BD entre actualizaciones
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/frases?categorias=suave"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   # Watchtower detecta nuevas imágenes en GHCR cada 5 minutos
-  # y actualiza el contenedor automáticamente sin intervención manual.
+  # y actualiza ambos contenedores automáticamente.
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower-juegos
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    # Vigila solo el contenedor "juegos-juan" para no tocar otros de CasaOS
-    command: --interval 300 juegos-juan
+    command: --interval 300 juegos-juan juegos-api
     restart: unless-stopped
     healthcheck:
       disable: true
+
+volumes:
+  juegos-db:

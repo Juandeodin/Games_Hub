@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yo Nunca — Juegos de Juan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/ads.css" />
+  <link rel="stylesheet" href="../../css/game-engine.css" />
+  <script>
+  window.GAME_CONFIG = {
+    title:             'YO\nNUNCA',
+    bgColor:           '#7c3aed',
+    phraseLabel:       'YO NUNCA HE...',
+    intro:             'Salen frases. Si lo has hecho… <strong>¡bebes!</strong>',
+    endIcon:           '🍺',
+    endText:           '¡Se acabaron\nlas frases!',
+    endSubtext:        'Espero que hayáis bebido bien…',
+    apiEndpoint:       '/api/frases',
+    submitEndpoint:    '/api/sugerencias',
+    submitHint:        'sin "Yo nunca he"',
+    submitPlaceholder: '…besado a alguien famoso',
+    categories: [
+      { id: 'suave',   name: 'Suave',       emoji: '🍺', desc: 'Para todos los públicos. Perfecto para calentar.' },
+      { id: 'fiesta',  name: 'Fiesta',       emoji: '🎉', desc: 'Borracheras, noches locas y caos total.'         },
+      { id: 'picante', name: 'Picante +18',  emoji: '🔥', desc: 'Solo para adultos. Contenido subido de tono.'    },
+    ],
+    fallback: [
+      { texto: 'mentido para salir de un compromiso',     categoria: 'suave'   },
+      { texto: 'comido directamente del bote',            categoria: 'suave'   },
+      { texto: 'fingido no haber visto un mensaje',       categoria: 'suave'   },
+      { texto: 'vomitado en la calle de tanto beber',     categoria: 'fiesta'  },
+      { texto: 'bailado encima de una mesa',              categoria: 'fiesta'  },
+      { texto: 'perdido el móvil de fiesta',              categoria: 'fiesta'  },
+      { texto: 'practicado sexting',                      categoria: 'picante' },
+      { texto: 'fantaseado con alguien de aquí presente', categoria: 'picante' },
+      { texto: 'mandado una foto comprometedora',         categoria: 'picante' },
+    ],
+  };
+  </script>
+  <script src="../../js/ads.js" defer></script>
+  <script src="../../js/game-engine.js" defer></script>
+</head>
+<body></body>
+</html>

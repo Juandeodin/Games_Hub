@@ -64,5 +64,16 @@
     "link": "games/ejemplo-1/index.html",
     "badge": "",
     "category": "Puzzle"
+  },
+  {
+    "id": "yo-nunca",
+    "title": "Yo Nunca",
+    "description": "El clásico juego de beber. Salen frases y bebes si lo has hecho. ¡Manda las tuyas!",
+    "image": "assets/img/yo-nunca.svg",
+    "color": "#7c3aed",
+    "type": "internal",
+    "link": "games/yo-nunca/index.html",
+    "badge": "NUEVO",
+    "category": "Fiesta"
   }
 ]

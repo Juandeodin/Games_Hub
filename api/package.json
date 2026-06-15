@@ -1,0 +1,14 @@
+{
+  "name": "juegos-juan-api",
+  "version": "1.0.0",
+  "description": "API backend para Juegos de Juan",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.3",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.1"
+  }
+}

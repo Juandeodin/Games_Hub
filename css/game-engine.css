@@ -1,0 +1,274 @@
+/* ================================================================
+   GAME ENGINE CSS — estilos compartidos entre todos los juegos
+   El JS del motor inyecta --game-bg en body para el color de fondo
+   ================================================================ */
+
+:root {
+  --negro:    #111111;
+  --amarillo: #ffe135;
+  --verde:    #00c853;
+  --naranja:  #ff7200;
+  --rojo:     #ff3b3b;
+  --blanco:   #ffffff;
+  --borde:    4px solid var(--negro);
+  --shadow:   8px 8px 0 var(--negro);
+  --game-bg:  #7c3aed;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--game-bg);
+  font-family: 'Fredoka', sans-serif;
+  color: var(--blanco);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 24px;
+}
+
+/* ── Pantallas ────────────────────────────────────────────────── */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  animation: pop-in .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+.screen.active { display: flex; }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(.7) rotate(-4deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+/* ── Botón Hub (solo en screen-inicio, no es fixed) ──────────── */
+.btn-hub {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Bangers', cursive;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  color: var(--negro);
+  background: var(--amarillo);
+  border: var(--borde);
+  border-radius: 10px;
+  padding: 7px 14px;
+  box-shadow: 4px 4px 0 var(--negro);
+  text-decoration: none;
+  transition: transform .1s, box-shadow .1s;
+}
+.btn-hub:hover  { background: var(--blanco); }
+.btn-hub:active { transform: translate(4px,4px); box-shadow: none; }
+
+/* ── Tarjeta blanca ───────────────────────────────────────────── */
+.card {
+  background: var(--blanco);
+  color: var(--negro);
+  border: var(--borde);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 32px 28px;
+  width: 100%;
+}
+
+/* ── Títulos ──────────────────────────────────────────────────── */
+.game-title {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(3.5rem, 14vw, 5.5rem);
+  letter-spacing: 4px;
+  line-height: 1;
+  text-shadow: 6px 6px 0 var(--negro);
+  color: var(--amarillo);
+}
+
+.section-title {
+  font-family: 'Bangers', cursive;
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  letter-spacing: 2px;
+  text-shadow: 3px 3px 0 var(--negro);
+}
+
+.game-intro  { font-size: 1.1rem; opacity: .85; max-width: 320px; }
+.screen-sub  { opacity: .85; font-size: .95rem; max-width: 320px; }
+
+/* ── Botones ──────────────────────────────────────────────────── */
+.btn {
+  font-family: 'Bangers', cursive;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  padding: 13px 30px;
+  border: var(--borde);
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .1s cubic-bezier(.34,1.56,.64,1), box-shadow .1s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.btn:hover   { transform: translateY(-4px) rotate(-1deg); box-shadow: 10px 10px 0 var(--negro); }
+.btn:active  { transform: translate(4px,4px); box-shadow: none; }
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; box-shadow: var(--shadow) !important; }
+
+.btn-primary   { background: var(--verde);    color: var(--blanco); }
+.btn-secondary { background: var(--amarillo); color: var(--negro); font-size: 1.1rem; box-shadow: 5px 5px 0 var(--negro); }
+.btn-danger    { background: var(--rojo);     color: var(--blanco); }
+.btn-ghost     { background: transparent; color: var(--blanco); border-color: rgba(255,255,255,.5); box-shadow: 4px 4px 0 rgba(0,0,0,.3); font-size: 1rem; }
+.btn-full      { width: 100%; justify-content: center; }
+
+/* ── Toggles de categoría ─────────────────────────────────────── */
+.toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.cat-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #f5f5f5;
+  border: var(--borde);
+  border-radius: 14px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: transform .12s, background .12s;
+  box-shadow: 4px 4px 0 var(--negro);
+  -webkit-user-select: none;
+  user-select: none;
+  color: var(--negro);
+}
+.cat-toggle:hover { transform: translateX(4px); }
+.cat-toggle.on    { background: var(--amarillo); }
+.cat-toggle input { display: none; }
+
+.cat-emoji { font-size: 1.6rem; flex-shrink: 0; }
+.cat-info  { text-align: left; }
+.cat-name  {
+  font-family: 'Bangers', cursive;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  line-height: 1;
+  display: block;
+}
+.cat-desc { font-size: .85rem; color: #555; margin-top: 2px; display: block; }
+.cat-toggle.on .cat-desc { color: #333; }
+
+/* ── Pantalla de juego ────────────────────────────────────────── */
+.phrase-card {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.phrase-label {
+  font-family: 'Bangers', cursive;
+  font-size: 1rem;
+  letter-spacing: 3px;
+  color: var(--game-bg);
+  opacity: .8;
+}
+
+.phrase-text {
+  font-size: clamp(1.1rem, 4vw, 1.4rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--negro);
+}
+
+/* ── Barra de progreso ────────────────────────────────────────── */
+.progress-wrap {
+  width: 100%;
+  background: rgba(255,255,255,.25);
+  border: 3px solid rgba(255,255,255,.4);
+  border-radius: 8px;
+  height: 12px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: var(--amarillo);
+  border-radius: 6px;
+  transition: width .3s ease;
+}
+
+/* ── Pantalla de fin ──────────────────────────────────────────── */
+.end-icon { font-size: 4rem; }
+
+/* ── Formulario de envío ──────────────────────────────────────── */
+.field { margin-bottom: 16px; text-align: left; }
+
+label.field-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--negro);
+}
+label.field-label .hint { opacity: .6; font-weight: 400; }
+
+textarea, select {
+  width: 100%;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1rem;
+  border: var(--borde);
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #fafafa;
+  color: var(--negro);
+  box-shadow: 3px 3px 0 var(--negro);
+  outline: none;
+  resize: vertical;
+}
+textarea       { min-height: 90px; }
+textarea:focus,
+select:focus   { border-color: var(--game-bg); }
+
+.form-hint  { font-size: .85rem; color: #666; margin-top: 6px; }
+.send-error { color: var(--rojo); font-weight: 600; margin-bottom: 12px; }
+
+/* ── Aviso sin conexión ───────────────────────────────────────── */
+.offline-notice {
+  background: var(--naranja);
+  color: var(--blanco);
+  border: var(--borde);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: .85rem;
+  font-weight: 600;
+  display: none;
+  width: 100%;
+  text-align: center;
+}
+.offline-notice.visible { display: block; }
+
+/* ── Anuncios ─────────────────────────────────────────────────── */
+#ad-game { width: 100%; max-width: 520px; }
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 420px) {
+  .btn  { font-size: 1.1rem; padding: 11px 20px; }
+  .card { padding: 24px 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}

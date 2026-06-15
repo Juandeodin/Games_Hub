@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 170">
+  <rect width="400" height="170" fill="#7c3aed"/>
+  <!-- vasos de cerveza -->
+  <rect x="60" y="50" width="36" height="60" rx="6" fill="#ffe135" stroke="#111" stroke-width="3"/>
+  <rect x="56" y="44" width="44" height="16" rx="5" fill="#fff" stroke="#111" stroke-width="2"/>
+  <rect x="96" y="62" width="12" height="28" rx="4" fill="#ffe135" stroke="#111" stroke-width="2"/>
+  <!-- burbujas -->
+  <circle cx="73" cy="80" r="4" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="85" cy="95" r="3" fill="rgba(255,255,255,0.4)"/>
+  <!-- segundo vaso -->
+  <rect x="130" y="60" width="30" height="50" rx="6" fill="#ffe135" stroke="#111" stroke-width="3"/>
+  <rect x="127" y="54" width="36" height="14" rx="4" fill="#fff" stroke="#111" stroke-width="2"/>
+  <rect x="160" y="70" width="10" height="22" rx="3" fill="#ffe135" stroke="#111" stroke-width="2"/>
+  <!-- texto principal -->
+  <text x="270" y="75" font-family="Impact,Arial Black,sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#ffe135" stroke="#111" stroke-width="2">YO</text>
+  <text x="270" y="108" font-family="Impact,Arial Black,sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#fff" stroke="#111" stroke-width="2">NUNCA</text>
+  <!-- estrellas decorativas -->
+  <text x="220" y="50" font-size="18" fill="#ffe135" opacity="0.8">★</text>
+  <text x="340" y="130" font-size="14" fill="#fff" opacity="0.6">✦</text>
+  <text x="200" y="145" font-size="12" fill="#ffe135" opacity="0.7">★</text>
+  <!-- emoji copa -->
+  <text x="50" y="148" font-family="serif" font-size="22" fill="#fff">🍺</text>
+</svg>

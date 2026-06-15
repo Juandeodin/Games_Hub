@@ -1,0 +1,11 @@
+# Desarrollo local: construye las imágenes en lugar de descargarlas de GHCR.
+# Este archivo se fusiona automáticamente con docker-compose.yml.
+# En producción (CasaOS) no uses este archivo, solo docker-compose.yml.
+services:
+  juegos-juan:
+    build:
+      context: .
+
+  juegos-api:
+    build:
+      context: ./api
