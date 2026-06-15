@@ -1,0 +1,24 @@
+services:
+
+  juegos-juan:
+    image: ghcr.io/juandeodin/juegos-juan:latest
+    container_name: juegos-juan
+    ports:
+      - "8080:80"         # Cambia 8080 por el puerto que quieras en CasaOS
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Watchtower detecta nuevas imágenes en GHCR cada 5 minutos
+  # y actualiza el contenedor automáticamente sin intervención manual.
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower-juegos
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    # Vigila solo el contenedor "juegos-juan" para no tocar otros de CasaOS
+    command: --interval 300 juegos-juan
+    restart: unless-stopped

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 170">
+  <rect width="400" height="170" fill="#1e90ff"/>
+  <!-- plataformas -->
+  <rect x="30"  y="130" width="90"  height="16" rx="6" fill="#ffe135" stroke="#111" stroke-width="3"/>
+  <rect x="160" y="100" width="90"  height="16" rx="6" fill="#ffe135" stroke="#111" stroke-width="3"/>
+  <rect x="290" y="68"  width="90"  height="16" rx="6" fill="#ffe135" stroke="#111" stroke-width="3"/>
+  <!-- personaje -->
+  <rect x="68"  y="100" width="26" height="28" rx="6" fill="#ff4fa3" stroke="#111" stroke-width="3"/>
+  <circle cx="81" cy="94" r="14" fill="#ff4fa3" stroke="#111" stroke-width="3"/>
+  <circle cx="76" cy="91" r="3" fill="#111"/>
+  <circle cx="86" cy="91" r="3" fill="#111"/>
+  <!-- arco salto -->
+  <path d="M81 98 Q160 40 205 100" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="8 5"/>
+  <text x="200" y="160" font-family="Arial Black,sans-serif" font-size="18" text-anchor="middle" fill="#fff" stroke="#111" stroke-width="1">SALTO</text>
+</svg>

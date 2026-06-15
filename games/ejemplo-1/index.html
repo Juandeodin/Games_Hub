@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juego de Ejemplo — Juegos de Juan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/ads.css" />
+  <style>
+    :root {
+      --negro: #111111;
+      --amarillo: #ffe135;
+      --azul: #1e90ff;
+      --rojo: #ff3b3b;
+      --blanco: #ffffff;
+      --borde: 4px solid var(--negro);
+      --shadow: 8px 8px 0 var(--negro);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--azul);
+      font-family: 'Fredoka', sans-serif;
+      color: var(--negro);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 40px 20px;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      color: var(--negro);
+      background: var(--amarillo);
+      border: var(--borde);
+      border-radius: 10px;
+      padding: 8px 18px;
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      z-index: 100;
+    }
+
+    .back-btn:hover { background: var(--blanco); }
+    .back-btn:active { transform: translate(4px,4px); box-shadow: 0 0 0 var(--negro); }
+
+    .game-container {
+      background: var(--blanco);
+      border: var(--borde);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 48px 56px;
+      text-align: center;
+      max-width: 560px;
+      width: 100%;
+      animation: pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes pop-in {
+      from { opacity: 0; transform: scale(0.7) rotate(-4deg); }
+      to   { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .game-title {
+      font-family: 'Bangers', cursive;
+      font-size: 3rem;
+      letter-spacing: 3px;
+      text-shadow: 4px 4px 0 var(--rojo);
+      margin-bottom: 16px;
+    }
+
+    .placeholder-icon {
+      font-size: 5rem;
+      display: block;
+      margin: 16px auto;
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-16px); }
+    }
+
+    .game-desc {
+      font-size: 1.15rem;
+      color: #444;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--amarillo);
+      border: 3px solid var(--negro);
+      border-radius: 8px;
+      padding: 4px 14px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      box-shadow: 3px 3px 0 var(--negro);
+      margin-top: 20px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="../../index.html" class="back-btn">← Volver al hub</a>
+
+  <div class="game-container">
+    <h1 class="game-title">¡Aquí va tu juego!</h1>
+    <span class="placeholder-icon" role="img" aria-label="cohete">🚀</span>
+    <p class="game-desc">
+      Esta es la plantilla de un juego interno. Reemplaza este contenido con tu juego real y actualiza el enlace en <code>data/games.json</code>.
+    </p>
+    <span class="tag">🛠 EN CONSTRUCCIÓN</span>
+  </div>
+
+  <div id="ad-game"></div>
+
+  <script src="../../js/ads.js"></script>
+  <script>
+    (function () {
+      var slot = window.Ads && window.Ads.makeBanner('gameBanner');
+      if (slot) document.getElementById('ad-game').appendChild(slot);
+    }());
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "memoria-comica",
+    "title": "Memoria Cómica",
+    "description": "Encuentra todas las parejas de cartas antes de que se acabe el tiempo. ¡Entrena tu memoria!",
+    "image": "assets/img/memoria.svg",
+    "color": "#ff3b3b",
+    "type": "internal",
+    "link": "games/ejemplo-1/index.html",
+    "badge": "NUEVO",
+    "category": "Memoria"
+  },
+  {
+    "id": "serpiente-loca",
+    "title": "Serpiente Loca",
+    "description": "El clásico de la serpiente con un giro de tuerca. ¡Come, crece y no te choques!",
+    "image": "assets/img/serpiente.svg",
+    "color": "#00c853",
+    "type": "external",
+    "link": "https://www.google.com/search?q=snake+game",
+    "badge": "",
+    "category": "Acción"
+  },
+  {
+    "id": "salto-infinito",
+    "title": "Salto Infinito",
+    "description": "Salta plataforma a plataforma y llega lo más alto que puedas sin caer al vacío.",
+    "image": "assets/img/salto.svg",
+    "color": "#1e90ff",
+    "type": "internal",
+    "link": "games/ejemplo-1/index.html",
+    "badge": "BETA",
+    "category": "Plataformas"
+  },
+  {
+    "id": "puzzle-colores",
+    "title": "Puzzle de Colores",
+    "description": "Ordena las piezas por colores antes de que el cronómetro llegue a cero.",
+    "image": "assets/img/puzzle.svg",
+    "color": "#7c3aed",
+    "type": "internal",
+    "link": "games/ejemplo-1/index.html",
+    "badge": "",
+    "category": "Puzzle"
+  },
+  {
+    "id": "atrapa-estrellas",
+    "title": "Atrapa Estrellas",
+    "description": "Mueve tu nave y recoge todas las estrellas antes de que los meteoritos te alcancen.",
+    "image": "assets/img/estrellas.svg",
+    "color": "#ff4fa3",
+    "type": "external",
+    "link": "https://www.google.com/search?q=star+catcher+game",
+    "badge": "PRONTO",
+    "category": "Acción"
+  },
+  {
+    "id": "escape-laberinto",
+    "title": "Escape del Laberinto",
+    "description": "Encuentra la salida del laberinto en el menor tiempo posible. ¿Aceptas el reto?",
+    "image": "assets/img/laberinto.svg",
+    "color": "#ff7200",
+    "type": "internal",
+    "link": "games/ejemplo-1/index.html",
+    "badge": "",
+    "category": "Puzzle"
+  }
+]

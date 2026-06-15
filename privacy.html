@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Privacidad — Juegos de Juan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --negro: #111111;
+      --amarillo: #ffe135;
+      --azul: #1e90ff;
+      --rojo: #ff3b3b;
+      --verde: #00c853;
+      --blanco: #ffffff;
+      --fondo: #fffbe6;
+      --borde: 4px solid var(--negro);
+      --shadow: 8px 8px 0 var(--negro);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--fondo);
+      font-family: 'Fredoka', sans-serif;
+      color: var(--negro);
+      padding: 40px 20px 60px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      color: var(--negro);
+      background: var(--amarillo);
+      border: var(--borde);
+      border-radius: 10px;
+      padding: 8px 18px;
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      margin-bottom: 32px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .back-btn:hover { background: var(--blanco); }
+    .back-btn:active { transform: translate(4px,4px); box-shadow: 0 0 0 var(--negro); }
+
+    .page-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2rem, 5vw, 3rem);
+      letter-spacing: 2px;
+      text-shadow: 4px 4px 0 var(--rojo);
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 32px;
+    }
+
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .section {
+      background: var(--blanco);
+      border: var(--borde);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 28px 32px;
+      margin-bottom: 28px;
+    }
+
+    .section h2 {
+      font-family: 'Bangers', cursive;
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      color: var(--negro);
+    }
+
+    .section p,
+    .section li {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .section ul {
+      padding-left: 20px;
+    }
+
+    .section li::marker { color: var(--rojo); }
+
+    .section a {
+      color: var(--azul);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    .highlight {
+      background: var(--amarillo);
+      border: 3px solid var(--negro);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-weight: 600;
+      margin-top: 12px;
+      display: inline-block;
+    }
+
+    .last-updated {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="content">
+    <a href="index.html" class="back-btn">← Volver al hub</a>
+
+    <h1 class="page-title">Política de Privacidad</h1>
+    <p class="page-subtitle">Juegos de Juan · ¿Qué hacemos con tus datos?</p>
+
+    <div class="section">
+      <h2>1. ¿Quién somos?</h2>
+      <p>
+        "Juegos de Juan" es un sitio web personal con juegos gratuitos creados por Juan.
+        No vendemos productos ni recogemos datos personales de forma activa.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>2. Publicidad — Google AdSense</h2>
+      <p>
+        Este sitio utiliza <strong>Google AdSense</strong> para mostrar anuncios y poder
+        mantenerlo gratuito. AdSense puede usar cookies para mostrar anuncios
+        relevantes según tus visitas anteriores a este u otros sitios web.
+      </p>
+      <ul>
+        <li>Google puede utilizar la cookie <strong>DART</strong> para mostrar anuncios
+          basados en tu historial de navegación.</li>
+        <li>Puedes desactivar los anuncios personalizados visitando
+          <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">
+            Configuración de anuncios de Google</a>.</li>
+        <li>Para más información, consulta la
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">
+            Política de privacidad de Google</a>.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>3. Cookies</h2>
+      <p>Usamos las siguientes cookies:</p>
+      <ul>
+        <li><strong>jj_ads_consent</strong> — Guarda tu decisión sobre el consentimiento de
+          anuncios (local, no se envía a ningún servidor).</li>
+        <li><strong>Cookies de Google AdSense</strong> — Solo si aceptas el banner de
+          consentimiento. Gestionadas íntegramente por Google.</li>
+      </ul>
+      <p>No usamos cookies de seguimiento propias ni analítica de terceros.</p>
+    </div>
+
+    <div class="section">
+      <h2>4. Datos que NO recogemos</h2>
+      <ul>
+        <li>No pedimos nombre, email ni ningún dato personal.</li>
+        <li>No usamos formularios de registro.</li>
+        <li>No tenemos base de datos de usuarios.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>5. Tus derechos (RGPD)</h2>
+      <p>
+        Tienes derecho a retirar tu consentimiento en cualquier momento borrando
+        la cookie <strong>jj_ads_consent</strong> del almacenamiento local de tu
+        navegador, o usando las herramientas de privacidad de tu navegador.
+      </p>
+      <span class="highlight">
+        ⚙️ Puedes gestionar tus preferencias de cookies en la configuración de tu navegador.
+      </span>
+    </div>
+
+    <div class="section">
+      <h2>6. Contacto</h2>
+      <p>
+        Si tienes preguntas sobre esta política, puedes contactar a través del
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a> del proyecto.
+      </p>
+    </div>
+
+    <p class="last-updated">Última actualización: junio 2025</p>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 170">
+  <rect width="400" height="170" fill="#7c3aed"/>
+  <!-- piezas del puzzle -->
+  <rect x="80"  y="30"  width="55" height="55" rx="4" fill="#ff3b3b"  stroke="#111" stroke-width="3"/>
+  <rect x="140" y="30"  width="55" height="55" rx="4" fill="#ffe135"  stroke="#111" stroke-width="3"/>
+  <rect x="200" y="30"  width="55" height="55" rx="4" fill="#00c853"  stroke="#111" stroke-width="3"/>
+  <rect x="80"  y="90"  width="55" height="55" rx="4" fill="#1e90ff"  stroke="#111" stroke-width="3"/>
+  <rect x="140" y="90"  width="55" height="55" rx="4" fill="#ff4fa3"  stroke="#111" stroke-width="3"/>
+  <rect x="200" y="90"  width="55" height="55" rx="4" fill="#ff7200"  stroke="#111" stroke-width="3"/>
+  <!-- pieza suelta -->
+  <rect x="290" y="55"  width="55" height="55" rx="4" fill="#fff"     stroke="#111" stroke-width="3" stroke-dasharray="6 3"/>
+  <text x="317" y="88" font-family="serif" font-size="28" text-anchor="middle" fill="#7c3aed">?</text>
+  <text x="200" y="165" font-family="Arial Black,sans-serif" font-size="18" text-anchor="middle" fill="#fff" stroke="#111" stroke-width="1">PUZZLE</text>
+</svg>

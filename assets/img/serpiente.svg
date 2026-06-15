@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 170">
+  <rect width="400" height="170" fill="#00c853"/>
+  <!-- cuerpo serpiente -->
+  <rect x="60" y="70" width="30" height="30" rx="6" fill="#fff" stroke="#111" stroke-width="2"/>
+  <rect x="95" y="70" width="30" height="30" rx="6" fill="#fff" stroke="#111" stroke-width="2"/>
+  <rect x="130" y="70" width="30" height="30" rx="6" fill="#fff" stroke="#111" stroke-width="2"/>
+  <rect x="130" y="35" width="30" height="30" rx="6" fill="#fff" stroke="#111" stroke-width="2"/>
+  <!-- cabeza -->
+  <rect x="165" y="35" width="36" height="36" rx="8" fill="#ffe135" stroke="#111" stroke-width="3"/>
+  <circle cx="175" cy="46" r="4" fill="#111"/>
+  <circle cx="191" cy="46" r="4" fill="#111"/>
+  <!-- manzana -->
+  <circle cx="310" cy="80" r="22" fill="#ff3b3b" stroke="#111" stroke-width="3"/>
+  <rect x="308" y="55" width="4" height="12" rx="2" fill="#00c853" stroke="#111" stroke-width="1"/>
+  <text x="200" y="145" font-family="Arial Black,sans-serif" font-size="18" text-anchor="middle" fill="#fff" stroke="#111" stroke-width="1">SERPIENTE</text>
+</svg>
