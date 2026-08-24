@@ -29,7 +29,11 @@ python -m http.server 8080
 cd api && npm install && node server.js
 ```
 
-**Production deploy:** Push to `main` → GitHub Actions builds and pushes images to GHCR → Watchtower on the server auto-updates within 5 minutes. The server needs a `.env` next to `docker-compose.yml` with `ADMIN_TOKEN` and `DATOS_DIR` (an **absolute** path — a relative one resolves against wherever compose is launched, which can silently create an empty folder that looks like data loss).
+**Production deploy:** Push to `main` → GitHub Actions builds and pushes images to GHCR → Watchtower on the server auto-updates within 5 minutes.
+
+⚠️ **The server runs CasaOS, whose "Custom Install" editor does not read a `.env` file.** `${VAR}` in a pasted compose is never interpolated, so Docker receives the literal string as a bind source and fails with *invalid mount config for type bind*. Production therefore uses **`docker-compose.casaos.yml`**, which has literal values and no variables. The committed copy keeps a placeholder token; the operator edits only the `ADMIN_TOKEN=` line when pasting, and that edited version must never come back into the repo.
+
+`docker-compose.yml` (with `${…}` + `.env`) remains the local-development file.
 
 ## Architecture
 
@@ -120,7 +124,15 @@ Categories live here, **not** in the game's HTML — that's what lets `/admin/` 
 
 `admin/index.html`, served publicly but gated by `Authorization: Bearer $ADMIN_TOKEN`. The token is typed in once and kept in `sessionStorage` (`jj_admin_token`); the game list doubles as the login probe.
 
-`ADMIN_TOKEN` comes from `.env` (see `.env.example`; `.env` is gitignored). **It fails closed** — with no token set, `/admin/*` returns 503 rather than falling back to a default. Admin routes are rate-limited and the token is compared in constant time.
+`ADMIN_TOKEN` comes from `.env` locally (see `.env.example`; `.env` is gitignored) and from a literal value in `docker-compose.casaos.yml` in production.
+
+**It fails closed**, and `tokenDeEntorno()` in `api/server.js` rejects more than just an empty value — each of these disables `/admin/*` with a 503 that says why:
+
+- **Uninterpolated syntax** (`${ADMIN_TOKEN:-}`). This is the dangerous one: the string is non-empty, so a naive `if (!token)` would treat the panel as configured and leave it open with a password published in the repo. It is exactly what CasaOS produces.
+- Known placeholders (`cambia…`, `PON-AQUI…`, `dev-token-inseguro` — the old insecure default).
+- Anything under 12 characters.
+
+Admin routes are rate-limited and the token is compared with `crypto.timingSafeEqual`.
 
 ⚠️ **Asset caching:** `nginx.conf` serves `.js`/`.css` with `expires 1y; immutable` and the filenames carry no hash. When you change a shared file (`js/game-engine.js`, `css/styles.css`…), bump the `?v=N` query in every `<script>`/`<link>` that references it, or returning visitors keep the old copy.
 

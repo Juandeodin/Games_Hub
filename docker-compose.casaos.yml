@@ -1,0 +1,69 @@
+# ════════════════════════════════════════════════════════════════════
+#  VERSIÓN PARA PEGAR EN CASAOS  (Apps → Custom Install)
+# ════════════════════════════════════════════════════════════════════
+#
+#  El editor de CasaOS NO lee el fichero .env del repositorio, así que
+#  aquí NO se pueden usar variables tipo ${DATOS_DIR}: Docker recibiría
+#  esa cadena tal cual como ruta y fallaría con
+#  "invalid mount config for type bind".
+#  Por eso este fichero lleva los valores ESCRITOS LITERALMENTE.
+#
+#  ANTES DE PEGARLO, cambia una sola línea:
+#    ADMIN_TOKEN=PON-AQUI-TU-CONTRASENA
+#
+#  Elige una contraseña de al menos 12 caracteres. Tres o cuatro palabras
+#  con guiones va perfecto: es fácil de teclear en el móvil y sigue
+#  siendo inviable de adivinar.
+#
+#  ⚠️  Una vez la escribas, este fichero contiene tu contraseña:
+#      NO lo vuelvas a copiar al repositorio ni lo subas a GitHub.
+#      La copia del repo debe quedarse siempre con el placeholder.
+# ════════════════════════════════════════════════════════════════════
+
+services:
+
+  juegos-juan:
+    image: ghcr.io/juandeodin/juegos-juan:latest
+    container_name: juegos-juan
+    ports:
+      - "8080:80"          # Cambia 8080 por el puerto que quieras en CasaOS
+    restart: unless-stopped
+    depends_on:
+      - juegos-api
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  juegos-api:
+    image: ghcr.io/juandeodin/juegos-juan-api:latest
+    container_name: juegos-api
+    environment:
+      # 👇 LO ÚNICO QUE TIENES QUE CAMBIAR
+      - ADMIN_TOKEN=PON-AQUI-TU-CONTRASENA
+      - DATA_DIR=/data
+    volumes:
+      # Ruta literal, sin variables. /DATA/AppData es la convención de
+      # CasaOS, así que podrás abrir estos JSON desde su gestor de
+      # archivos. La carpeta vive FUERA de la imagen: actualizar los
+      # contenedores no toca las frases.
+      - /DATA/AppData/juegos-juan/datos:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/frases?categorias=suave"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Watchtower detecta nuevas imágenes en GHCR cada 5 minutos
+  # y actualiza ambos contenedores automáticamente.
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower-juegos
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 300 juegos-juan juegos-api
+    restart: unless-stopped
+    healthcheck:
+      disable: true

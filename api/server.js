@@ -7,8 +7,38 @@ const store = require('./store');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
 const JUEGO_POR_DEFECTO = 'yo-nunca';
+const TOKEN_MIN = 12;
+
+/**
+ * Valida el token recibido por entorno antes de fiarse de él.
+ *
+ * El caso peligroso no es que falte, sino que llegue SIN INTERPOLAR: hay
+ * interfaces (la de CasaOS, entre otras) que no leen el fichero .env, y
+ * entonces la variable vale literalmente "${ADMIN_TOKEN:-}". Como esa
+ * cadena no está vacía, un simple `if (!token)` daría el panel por
+ * configurado y lo dejaría abierto con una contraseña que está publicada
+ * en el repositorio. También se descartan los placeholders del ejemplo y
+ * cualquier cosa demasiado corta.
+ */
+function tokenDeEntorno() {
+  const bruto = (process.env.ADMIN_TOKEN || '').trim();
+  if (!bruto) return { token: '', motivo: 'no está definido' };
+  if (bruto.includes('${') || bruto.includes('$(')) {
+    return { token: '', motivo: `llegó sin interpolar ("${bruto}") — la interfaz que lanza el stack no está leyendo el .env; escribe el valor literal` };
+  }
+  // Valores de ejemplo o publicados que nunca deben valer como contraseña,
+  // incluido el default inseguro que traía la versión anterior de la API.
+  if (/^(cambia|changeme|tu-token|token|password|admin|secret|dev-token|pon-aqui|ponaqui)/i.test(bruto)) {
+    return { token: '', motivo: 'es un valor de ejemplo o conocido, cámbialo' };
+  }
+  if (bruto.length < TOKEN_MIN) {
+    return { token: '', motivo: `es demasiado corto (${bruto.length} caracteres, mínimo ${TOKEN_MIN})` };
+  }
+  return { token: bruto, motivo: null };
+}
+
+const { token: ADMIN_TOKEN, motivo: MOTIVO_SIN_TOKEN } = tokenDeEntorno();
 
 // nginx va por delante; sin esto req.ip sería la IP del contenedor nginx
 // y el rate limit saldría global en vez de por visitante.
@@ -94,7 +124,7 @@ function requireAdmin(req, res, next) {
   // Fail closed: sin token configurado el panel queda cerrado, en vez de
   // caer a un valor por defecto conocido como hacía la versión anterior.
   if (!ADMIN_TOKEN) {
-    return res.status(503).json({ error: 'Administración deshabilitada: falta ADMIN_TOKEN en el servidor.' });
+    return res.status(503).json({ error: `Administración deshabilitada: ADMIN_TOKEN ${MOTIVO_SIN_TOKEN}.` });
   }
   const auth = req.headers['authorization'] || '';
   const recibido = auth.startsWith('Bearer ') ? auth.slice(7) : '';
@@ -143,5 +173,7 @@ app.put('/admin/juego/:id', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`API escuchando en :${PORT}`);
   console.log(`Datos en: ${store.DATA_DIR} (${store.listar().join(', ') || 'vacío'})`);
-  console.log(`ADMIN_TOKEN: ${ADMIN_TOKEN ? '✅ configurado' : '⚠️  sin configurar — /admin deshabilitado (503)'}`);
+  console.log(ADMIN_TOKEN
+    ? 'ADMIN_TOKEN: ✅ configurado'
+    : `ADMIN_TOKEN: ⚠️  ${MOTIVO_SIN_TOKEN} — /admin deshabilitado (503)`);
 });
