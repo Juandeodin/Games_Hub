@@ -2,11 +2,15 @@
 #  VERSIÓN PARA PEGAR EN CASAOS  (Apps → Custom Install)
 # ════════════════════════════════════════════════════════════════════
 #
+#  UN SOLO CONTENEDOR: nginx y la API de Node van juntos y se hablan por
+#  127.0.0.1. Con dos contenedores, nginx tenía que encontrar la API por
+#  el DNS interno de Docker (juegos-api:3000); si CasaOS no los coloca en
+#  la misma red, ese nombre no resuelve y todo /api/ devuelve 502.
+#  Metiéndolos en el mismo contenedor esa clase de problema desaparece.
+#
 #  El editor de CasaOS NO lee el fichero .env del repositorio, así que
-#  aquí NO se pueden usar variables tipo ${DATOS_DIR}: Docker recibiría
-#  esa cadena tal cual como ruta y fallaría con
-#  "invalid mount config for type bind".
-#  Por eso este fichero lleva los valores ESCRITOS LITERALMENTE.
+#  aquí NO se pueden usar variables tipo ${ADMIN_TOKEN}: Docker recibiría
+#  esa cadena tal cual. Por eso los valores van ESCRITOS LITERALMENTE.
 #
 #  ANTES DE PEGARLO, cambia una sola línea:
 #    ADMIN_TOKEN=PON-AQUI-TU-CONTRASENA
@@ -23,41 +27,38 @@
 services:
 
   juegos-juan:
-    image: ghcr.io/juandeodin/juegos-juan:latest
+    image: ghcr.io/juandeodin/juegos-juan-todo-en-uno:latest
     container_name: juegos-juan
     ports:
       - "8080:80"  # Cambia 8080 por el puerto que quieras en CasaOS
-    restart: unless-stopped
-    depends_on:
-      - juegos-api
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
-  juegos-api:
-    image: ghcr.io/juandeodin/juegos-juan-api:latest
-    container_name: juegos-api
     environment:
       # 👇 LO ÚNICO QUE TIENES QUE CAMBIAR
       - ADMIN_TOKEN=PON-AQUI-TU-CONTRASENA
       - DATA_DIR=/data
     volumes:
-      # Ruta literal, sin variables. /DATA/AppData es la convención de
-      # CasaOS, así que podrás abrir estos JSON desde su gestor de
-      # archivos. La carpeta vive FUERA de la imagen: actualizar los
-      # contenedores no toca las frases.
-      - /DATA/AppData/juegos-juan/datos:/data
+      # Volumen con nombre: lo gestiona Docker, sin rutas del servidor que
+      # puedan no existir — que era el "invalid mount config for type
+      # bind". Persiste igual entre despliegues.
+      #
+      # Si prefieres los JSON en una carpeta que puedas abrir por SSH,
+      # sustituye esta línea por una ruta ABSOLUTA ya creada, p. ej.:
+      #     - /DATA/AppData/juegos-juan/datos:/data
+      # creándola antes con:
+      #     sudo mkdir -p /DATA/AppData/juegos-juan/datos
+      - juegos-datos:/data
     restart: unless-stopped
+    # La imagen ya trae healthcheck y comprueba la cadena entera (nginx
+    # responde Y llega a la API). Se declara aquí porque CasaOS da error
+    # si un contenedor no tiene ninguno ("has no healthcheck configured").
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/frases?categorias=suave').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/api/health"]
       interval: 30s
       timeout: 5s
       retries: 3
+      start_period: 20s
 
   # Watchtower detecta nuevas imágenes en GHCR cada 5 minutos
-  # y actualiza ambos contenedores automáticamente.
+  # y actualiza el contenedor automáticamente.
   #
   # Se usa el fork nickfedor/: el original containrrr/ está sin mantener
   # desde 2023 y su cliente habla la API 1.25 de Docker, que los daemons
@@ -69,15 +70,14 @@ services:
     container_name: watchtower-juegos
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 juegos-juan juegos-api
+    command: --interval 300 juegos-juan
     restart: unless-stopped
-    # La imagen ya define HEALTHCHECK ["CMD","/watchtower","--health-check"].
-    # Se declara explícitamente porque CasaOS da error si un contenedor no
-    # tiene ninguno ("has no healthcheck configured") — que es justo lo que
-    # provocaba el antiguo `healthcheck: disable: true`.
     healthcheck:
       test: ["CMD", "/watchtower", "--health-check"]
       interval: 60s
       timeout: 10s
       retries: 3
       start_period: 30s
+
+volumes:
+  juegos-datos:

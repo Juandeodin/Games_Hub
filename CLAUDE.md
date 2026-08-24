@@ -31,9 +31,17 @@ cd api && npm install && node server.js
 
 **Production deploy:** Push to `main` → GitHub Actions builds and pushes images to GHCR → Watchtower on the server auto-updates within 5 minutes.
 
-⚠️ **The server runs CasaOS, whose "Custom Install" editor does not read a `.env` file.** `${VAR}` in a pasted compose is never interpolated, so Docker receives the literal string as a bind source and fails with *invalid mount config for type bind*. Production therefore uses **`docker-compose.casaos.yml`**, which has literal values and no variables. The committed copy keeps a placeholder token; the operator edits only the `ADMIN_TOKEN=` line when pasting, and that edited version must never come back into the repo.
+### Production runs a single container
 
-`docker-compose.yml` (with `${…}` + `.env`) remains the local-development file.
+`Dockerfile.todo-en-uno` builds nginx **and** the Node API into one image (`juegos-juan-todo-en-uno`), run by supervisord. `nginx.todo-en-uno.conf` proxies `/api/` to `127.0.0.1:3000`.
+
+This exists because the two-container split kept failing on the server: nginx had to find the API through Docker's internal DNS (`juegos-api:3000`), and when CasaOS didn't place both containers on the same user-defined network the name never resolved, so every `/api/` call returned 502. Talking over loopback removes that entire failure class — and makes a local run behave identically to the server, which the split setup did not.
+
+The static files are copied **path by path** (`COPY css/`, `COPY games/`, …) rather than `COPY .` + delete. The compose files contain the real `ADMIN_TOKEN` in production, so a copy-everything step risks publishing them at `/docker-compose.casaos.yml`.
+
+⚠️ **CasaOS's "Custom Install" editor does not read a `.env` file.** `${VAR}` in a pasted compose is never interpolated — Docker receives the literal string, which is what caused *invalid mount config for type bind*. Production therefore uses **`docker-compose.casaos.yml`**: literal values, no variables. The committed copy keeps a placeholder token; the operator edits only the `ADMIN_TOKEN=` line, and that edited version must never come back into the repo.
+
+`docker-compose.yml` (two containers, `${…}` + `.env`) remains for local development, and the separate `juegos-juan` / `juegos-juan-api` images are still built.
 
 **Watchtower** uses the `nickfedor/watchtower` fork. The original `containrrr/watchtower` has been unmaintained since 2023 and its client speaks Docker API 1.25, which modern daemons reject (`client version 1.25 is too old`) — the container starts, fails, and dies, silently killing auto-deploy. Do not switch back, and do not "fix" an unhealthy watchtower by disabling its healthcheck: that only hides a broken deploy pipeline (and CasaOS then errors with *has no healthcheck configured*).
 

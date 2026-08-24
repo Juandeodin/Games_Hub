@@ -41,7 +41,22 @@ jobs:
           cache-from: type=gha,scope=web
           cache-to: type=gha,mode=max,scope=web
 
-      # ── Imagen API (Node + Express + SQLite) ────────────────────
+      # ── Imagen todo-en-uno (nginx + API en un solo contenedor) ───
+      # Es la que se despliega: evita que nginx tenga que localizar a la
+      # API por el DNS de Docker, que es donde fallaba en el servidor.
+      - name: Construir y publicar imagen todo-en-uno
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.todo-en-uno
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER }}/juegos-juan-todo-en-uno:latest
+            ghcr.io/${{ env.OWNER }}/juegos-juan-todo-en-uno:sha-${{ github.sha }}
+          cache-from: type=gha,scope=todo
+          cache-to: type=gha,mode=max,scope=todo
+
+      # ── Imagen API (Node + Express) ─────────────────────────────
       - name: Construir y publicar imagen API
         uses: docker/build-push-action@v5
         with:

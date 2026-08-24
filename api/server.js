@@ -85,6 +85,18 @@ function resolverJuego(q) {
 // RUTAS PÚBLICAS
 // ═══════════════════════════════════════════════════════════════════
 
+// Índice: entrar a /api/ a pelo daba un 404 desconcertante.
+app.get('/', (req, res) => {
+  res.json({
+    api: 'Juegos de Juan',
+    rutas: [
+      'GET /api/health',
+      'GET /api/config?juego=<slug>',
+      'GET /api/frases?juego=<slug>&categorias=<a,b>',
+    ],
+  });
+});
+
 /**
  * Diagnóstico. Responde SIEMPRE 200 aunque el almacenamiento esté roto:
  * su utilidad es precisamente poder consultarlo cuando algo falla.
