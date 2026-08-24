@@ -130,6 +130,16 @@ function existe(juego) {
   return SLUG.test(juego) && fs.existsSync(ruta(juego));
 }
 
+/** Para el diagnóstico de /health: ¿se puede escribir en DATA_DIR? */
+function esEscribible() {
+  try {
+    fs.accessSync(DATA_DIR, fs.constants.W_OK);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 /**
  * Lee el documento de un juego. Sin caché a propósito: los ficheros son
  * de unos pocos KB y así una edición hecha a mano por SSH surte efecto
@@ -185,4 +195,4 @@ function sembrarSiFalta() {
   }
 }
 
-module.exports = { DATA_DIR, ErrorValidacion, listar, existe, leer, guardar, validar, sembrarSiFalta };
+module.exports = { DATA_DIR, ErrorValidacion, listar, existe, esEscribible, leer, guardar, validar, sembrarSiFalta };

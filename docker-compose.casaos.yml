@@ -26,7 +26,7 @@ services:
     image: ghcr.io/juandeodin/juegos-juan:latest
     container_name: juegos-juan
     ports:
-      - "8080:80"          # Cambia 8080 por el puerto que quieras en CasaOS
+      - "8080:80"  # Cambia 8080 por el puerto que quieras en CasaOS
     restart: unless-stopped
     depends_on:
       - juegos-api

@@ -46,7 +46,25 @@ app.set('trust proxy', 1);
 
 app.use(express.json({ limit: '256kb' }));
 
-store.sembrarSiFalta();
+/**
+ * El sembrado puede fallar por causas de infraestructura: el volumen no
+ * está montado, la ruta no existe o no hay permiso de escritura.
+ *
+ * NO se deja explotar. Si el proceso muere aquí, Docker lo reinicia en
+ * bucle, nginx no encuentra a nadie detrás y el navegador recibe un 502
+ * opaco que no dice nada del problema real. Arrancando igualmente, el
+ * motivo queda en los logs y en GET /health, y las rutas devuelven un
+ * error legible.
+ */
+let ERROR_DATOS = null;
+try {
+  store.sembrarSiFalta();
+} catch (err) {
+  ERROR_DATOS = `No se pudo preparar ${store.DATA_DIR}: ${err.code || ''} ${err.message}`.trim();
+  console.error('❌ ERROR DE ALMACENAMIENTO —', ERROR_DATOS);
+  console.error('   Revisa que el volumen esté montado y sea escribible.');
+  console.error('   En el compose: la línea "- /ruta/del/servidor:/data".');
+}
 
 // ── Fisher-Yates shuffle ─────────────────────────────────────────────
 function shuffle(arr) {
@@ -67,11 +85,31 @@ function resolverJuego(q) {
 // RUTAS PÚBLICAS
 // ═══════════════════════════════════════════════════════════════════
 
+/**
+ * Diagnóstico. Responde SIEMPRE 200 aunque el almacenamiento esté roto:
+ * su utilidad es precisamente poder consultarlo cuando algo falla.
+ */
+app.get('/health', (req, res) => {
+  const juegos = store.listar();
+  res.json({
+    ok: !ERROR_DATOS && juegos.length > 0,
+    dataDir: store.DATA_DIR,
+    escribible: store.esEscribible(),
+    juegos,
+    errorDatos: ERROR_DATOS,
+    admin: ADMIN_TOKEN ? 'configurado' : `deshabilitado (${MOTIVO_SIN_TOKEN})`,
+  });
+});
+
 // GET /frases?juego=yo-nunca&categorias=suave,fiesta
 app.get('/frases', (req, res) => {
   const juego = resolverJuego(req.query.juego);
   const doc = store.leer(juego);
-  if (!doc) return res.status(503).json({ error: 'Contenido no disponible.' });
+  if (!doc) return res.status(503).json({
+    error: ERROR_DATOS
+      ? `Contenido no disponible — ${ERROR_DATOS}`
+      : `Contenido no disponible: no se encontró "${juego}" en ${store.DATA_DIR}.`,
+  });
 
   const validas = new Set(doc.categorias.map(c => c.id));
   const pedidas = (req.query.categorias || '').split(',').map(c => c.trim().toLowerCase());
@@ -94,7 +132,11 @@ app.get('/frases', (req, res) => {
 app.get('/config', (req, res) => {
   const juego = resolverJuego(req.query.juego);
   const doc = store.leer(juego);
-  if (!doc) return res.status(503).json({ error: 'Contenido no disponible.' });
+  if (!doc) return res.status(503).json({
+    error: ERROR_DATOS
+      ? `Contenido no disponible — ${ERROR_DATOS}`
+      : `Contenido no disponible: no se encontró "${juego}" en ${store.DATA_DIR}.`,
+  });
   res.json({ juego, categorias: doc.categorias });
 });
 
