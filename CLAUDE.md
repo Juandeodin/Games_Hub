@@ -35,6 +35,13 @@ cd api && npm install && node server.js
 
 `docker-compose.yml` (with `${…}` + `.env`) remains the local-development file.
 
+**Watchtower** uses the `nickfedor/watchtower` fork. The original `containrrr/watchtower` has been unmaintained since 2023 and its client speaks Docker API 1.25, which modern daemons reject (`client version 1.25 is too old`) — the container starts, fails, and dies, silently killing auto-deploy. Do not switch back, and do not "fix" an unhealthy watchtower by disabling its healthcheck: that only hides a broken deploy pipeline (and CasaOS then errors with *has no healthcheck configured*).
+
+**Healthcheck gotchas**, all three hit in production:
+- Use `127.0.0.1`, never `localhost` — busybox/glibc resolve it to `::1` first, while nginx (`listen 80;`) and the API (`listen(PORT, '0.0.0.0')`) bind IPv4 only.
+- The API image is `node:20-slim`, which has **neither `wget` nor `curl`**. Its healthcheck runs `node -e "fetch(…)"` instead. Don't reintroduce a `wget` healthcheck there.
+- nginx resolves `proxy_pass` targets at startup, so a hardcoded upstream name makes the whole site refuse to boot when the API is down (`host not found in upstream`). `nginx.conf` puts the upstream in a variable with `resolver 127.0.0.11 ipv6=off` so resolution happens per request — `ipv6=off` matters, or the AAAA lookup hangs until the client aborts.
+
 ## Architecture
 
 ```
