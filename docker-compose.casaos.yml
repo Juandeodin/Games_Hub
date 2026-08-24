@@ -31,7 +31,7 @@ services:
     depends_on:
       - juegos-api
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -51,7 +51,7 @@ services:
       - /DATA/AppData/juegos-juan/datos:/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/frases?categorias=suave"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/frases?categorias=suave').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
       retries: 3
