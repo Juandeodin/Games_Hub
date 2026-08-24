@@ -18,11 +18,16 @@ services:
     image: ghcr.io/juandeodin/juegos-juan-api:latest
     container_name: juegos-api
     environment:
-      # ⚠️  Cambia este token por uno secreto antes de desplegar en producción
-      - ADMIN_TOKEN=cambia-esto-por-un-token-secreto
-      - DB_PATH=/data/frases.db
+      # Se leen del fichero .env (ver .env.example). Sin ADMIN_TOKEN el
+      # panel /admin queda cerrado (503), nunca abierto.
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-}
+      - DATA_DIR=/data
     volumes:
-      - juegos-db:/data   # Persiste la BD entre actualizaciones
+      # Carpeta del servidor con los JSON de contenido. Vive FUERA de la
+      # imagen, así que actualizar los contenedores no toca las frases.
+      # Usa una ruta absoluta en DATOS_DIR: una relativa se resuelve desde
+      # donde lances docker-compose.
+      - ${DATOS_DIR:-./datos-juegos}:/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/frases?categorias=suave"]
@@ -42,5 +47,6 @@ services:
     healthcheck:
       disable: true
 
-volumes:
-  juegos-db:
+# El volumen `juegos-db` de la versión con SQLite ya no se usa. No se borra
+# solo: si quieres recuperar la BD antigua sigue ahí hasta que hagas
+# `docker volume rm games_hub_juegos-db`.

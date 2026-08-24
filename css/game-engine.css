@@ -154,6 +154,8 @@ body {
 .cat-toggle:hover { transform: translateX(4px); }
 .cat-toggle.on    { background: var(--amarillo); }
 .cat-toggle input { display: none; }
+.cat-toggle.disabled          { opacity: .55; cursor: not-allowed; }
+.cat-toggle.disabled:hover    { transform: none; }
 
 .cat-emoji { font-size: 1.6rem; flex-shrink: 0; }
 .cat-info  { text-align: left; }
@@ -241,6 +243,32 @@ select:focus   { border-color: var(--game-bg); }
 
 .form-hint  { font-size: .85rem; color: #666; margin-top: 6px; }
 .send-error { color: var(--rojo); font-weight: 600; margin-bottom: 12px; }
+
+/* ── Lista de "Mis frases" ────────────────────────────────────── */
+.phrase-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.phrase-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #f5f5f5;
+  border: var(--borde);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: var(--negro);
+}
+.phrase-item span { word-break: break-word; }
+
+.btn-mini { font-size: .9rem; padding: 6px 12px; box-shadow: 3px 3px 0 var(--negro); }
+
+.empty-state { color: #666; font-size: .9rem; text-align: center; }
 
 /* ── Aviso sin conexión ───────────────────────────────────────── */
 .offline-notice {

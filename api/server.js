@@ -1,33 +1,22 @@
 'use strict';
 
+const crypto = require('crypto');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
-const db = require('./db');
+const store = require('./store');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'dev-token-inseguro';
-const CATEGORIAS_VALIDAS = new Set(['suave', 'fiesta', 'picante']);
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
+const JUEGO_POR_DEFECTO = 'yo-nunca';
 
-app.use(express.json());
+// nginx va por delante; sin esto req.ip sería la IP del contenedor nginx
+// y el rate limit saldría global en vez de por visitante.
+app.set('trust proxy', 1);
 
-// ── Rate limit para sugerencias ──────────────────────────────────────
-const sugerenciasLimit = rateLimit({
-  windowMs: 60 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Demasiadas solicitudes. Espera un minuto.' },
-});
+app.use(express.json({ limit: '256kb' }));
 
-// ── Middleware de autenticación admin ────────────────────────────────
-function requireAdmin(req, res, next) {
-  const auth = req.headers['authorization'] || '';
-  if (auth !== `Bearer ${ADMIN_TOKEN}`) {
-    return res.status(401).json({ error: 'No autorizado.' });
-  }
-  next();
-}
+store.sembrarSiFalta();
 
 // ── Fisher-Yates shuffle ─────────────────────────────────────────────
 function shuffle(arr) {
@@ -38,74 +27,121 @@ function shuffle(arr) {
   return arr;
 }
 
+/** Resuelve el juego pedido; cae a Yo Nunca si falta o no existe, lo que
+ *  mantiene vivo el healthcheck y los frontends con el JS aún cacheado. */
+function resolverJuego(q) {
+  return (typeof q === 'string' && store.existe(q)) ? q : JUEGO_POR_DEFECTO;
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // RUTAS PÚBLICAS
 // ═══════════════════════════════════════════════════════════════════
 
-// GET /frases?categorias=suave,fiesta
+// GET /frases?juego=yo-nunca&categorias=suave,fiesta
 app.get('/frases', (req, res) => {
-  const raw = (req.query.categorias || '').split(',').map(c => c.trim().toLowerCase());
-  const cats = raw.filter(c => CATEGORIAS_VALIDAS.has(c));
+  const juego = resolverJuego(req.query.juego);
+  const doc = store.leer(juego);
+  if (!doc) return res.status(503).json({ error: 'Contenido no disponible.' });
+
+  const validas = new Set(doc.categorias.map(c => c.id));
+  const pedidas = (req.query.categorias || '').split(',').map(c => c.trim().toLowerCase());
+  const cats = pedidas.filter(c => validas.has(c));
 
   if (cats.length === 0) {
-    return res.status(400).json({ error: 'Indica al menos una categoría válida: suave, fiesta, picante.' });
+    return res.status(400).json({
+      error: `Indica al menos una categoría válida para "${juego}": ${[...validas].join(', ')}.`,
+    });
   }
 
-  const placeholders = cats.map(() => '?').join(',');
-  const frases = db
-    .prepare(`SELECT id, texto, categoria FROM frases WHERE estado='aprobada' AND categoria IN (${placeholders})`)
-    .all(...cats);
+  const frases = doc.frases
+    .filter(f => cats.includes(f.categoria))
+    .map((f, i) => ({ id: i, texto: f.texto, categoria: f.categoria }));
 
   res.json(shuffle(frases));
 });
 
-// POST /sugerencias
-app.post('/sugerencias', sugerenciasLimit, (req, res) => {
-  const { texto, categoria } = req.body || {};
-
-  if (typeof texto !== 'string' || texto.trim().length < 5 || texto.trim().length > 200) {
-    return res.status(400).json({ error: 'La frase debe tener entre 5 y 200 caracteres.' });
-  }
-  if (!CATEGORIAS_VALIDAS.has(categoria)) {
-    return res.status(400).json({ error: 'Categoría no válida.' });
-  }
-
-  db.prepare(`INSERT INTO frases (texto, categoria, estado) VALUES (?, ?, 'pendiente')`).run(texto.trim(), categoria);
-  res.status(201).json({ ok: true, mensaje: '¡Frase recibida! Juan la revisará pronto.' });
+// GET /config?juego=yo-nunca — categorías para pintar los toggles
+app.get('/config', (req, res) => {
+  const juego = resolverJuego(req.query.juego);
+  const doc = store.leer(juego);
+  if (!doc) return res.status(503).json({ error: 'Contenido no disponible.' });
+  res.json({ juego, categorias: doc.categorias });
 });
 
 // ═══════════════════════════════════════════════════════════════════
-// RUTAS DE MODERACIÓN (requieren token de admin)
+// RUTAS DE ADMINISTRACIÓN
 // ═══════════════════════════════════════════════════════════════════
 
-// GET /admin/sugerencias
-app.get('/admin/sugerencias', requireAdmin, (req, res) => {
-  const pendientes = db
-    .prepare(`SELECT id, texto, categoria, creada FROM frases WHERE estado='pendiente' ORDER BY creada ASC`)
-    .all();
-  res.json(pendientes);
+// Limita los intentos de token: antes las rutas admin admitían fuerza
+// bruta ilimitada.
+const adminLimit = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas solicitudes. Espera un minuto.' },
 });
 
-// POST /admin/sugerencias/:id/aprobar
-app.post('/admin/sugerencias/:id/aprobar', requireAdmin, (req, res) => {
-  const info = db
-    .prepare(`UPDATE frases SET estado='aprobada' WHERE id=? AND estado='pendiente'`)
-    .run(Number(req.params.id));
-  if (info.changes === 0) return res.status(404).json({ error: 'No encontrada o ya procesada.' });
-  res.json({ ok: true });
+/** Comparación en tiempo constante, tolerante a longitudes distintas. */
+function tokenValido(recibido) {
+  const a = Buffer.from(recibido);
+  const b = Buffer.from(ADMIN_TOKEN);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
+function requireAdmin(req, res, next) {
+  // Fail closed: sin token configurado el panel queda cerrado, en vez de
+  // caer a un valor por defecto conocido como hacía la versión anterior.
+  if (!ADMIN_TOKEN) {
+    return res.status(503).json({ error: 'Administración deshabilitada: falta ADMIN_TOKEN en el servidor.' });
+  }
+  const auth = req.headers['authorization'] || '';
+  const recibido = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  if (!recibido || !tokenValido(recibido)) {
+    return res.status(401).json({ error: 'No autorizado.' });
+  }
+  next();
+}
+
+app.use('/admin', adminLimit, requireAdmin);
+
+// GET /admin/juegos — juegos editables
+app.get('/admin/juegos', (req, res) => {
+  res.json(store.listar());
 });
 
-// POST /admin/sugerencias/:id/rechazar
-app.post('/admin/sugerencias/:id/rechazar', requireAdmin, (req, res) => {
-  const info = db
-    .prepare(`UPDATE frases SET estado='rechazada' WHERE id=? AND estado='pendiente'`)
-    .run(Number(req.params.id));
-  if (info.changes === 0) return res.status(404).json({ error: 'No encontrada o ya procesada.' });
-  res.json({ ok: true });
+// GET /admin/juego/:id — documento completo
+app.get('/admin/juego/:id', (req, res) => {
+  const doc = store.leer(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Juego no encontrado.' });
+  res.json(doc);
+});
+
+// PUT /admin/juego/:id — validar y guardar
+app.put('/admin/juego/:id', (req, res) => {
+  if (!store.existe(req.params.id)) {
+    return res.status(404).json({ error: 'Juego no encontrado.' });
+  }
+  try {
+    const guardado = store.guardar(req.params.id, req.body);
+    res.json({
+      ok: true,
+      categorias: guardado.categorias.length,
+      frases: guardado.frases.length,
+    });
+  } catch (err) {
+    if (err instanceof store.ErrorValidacion) {
+      return res.status(400).json({ error: 'El contenido no es válido.', problemas: err.problemas });
+    }
+    console.error('Error al guardar:', err);
+    res.status(500).json({ error: 'No se ha podido guardar.' });
+  }
 });
 
 // ── Arranque ─────────────────────────────────────────────────────────
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`API escuchando en :${PORT}`);
-  console.log(`ADMIN_TOKEN: ${ADMIN_TOKEN === 'dev-token-inseguro' ? '⚠️  usando token por defecto (solo desarrollo)' : '✅ configurado'}`);
+  console.log(`Datos en: ${store.DATA_DIR} (${store.listar().join(', ') || 'vacío'})`);
+  console.log(`ADMIN_TOKEN: ${ADMIN_TOKEN ? '✅ configurado' : '⚠️  sin configurar — /admin deshabilitado (503)'}`);
 });

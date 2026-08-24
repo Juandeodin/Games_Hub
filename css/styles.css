@@ -207,7 +207,7 @@ main {
 
 /* Zona de imagen/color */
 .card-image {
-  height: 170px;
+  height: 120px;
   background-size: cover;
   background-position: center;
   border-bottom: var(--borde);
@@ -226,6 +226,18 @@ main {
     rgba(0,0,0,0.04) 10px,
     rgba(0,0,0,0.04) 12px
   );
+}
+
+.card-emoji {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.2rem;
+  line-height: 1;
+  z-index: 1;
+  filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.25));
 }
 
 /* Badge (NUEVO, BETA…) */

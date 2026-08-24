@@ -2,6 +2,11 @@
   'use strict';
 
   /* ============================================================
+     INTERRUPTOR MAESTRO — pon a true cuando AdSense apruebe el sitio
+     ============================================================ */
+  const ADS_ENABLED = false;
+
+  /* ============================================================
      CONFIGURACIÓN — pega aquí tus IDs de AdSense cuando los tengas
      ============================================================ */
   const ADS_CONFIG = {
@@ -12,7 +17,7 @@
       inFeed:       'XXXXXXXXXX',         // bloque in-feed dentro del grid
       gameBanner:   'XXXXXXXXXX',         // bloque en juegos internos
     },
-    inFeedEvery: 4,  // insertar un nativo cada N tarjetas de juego
+    inFeedEvery: ADS_ENABLED ? 4 : 0,  // insertar un nativo cada N tarjetas de juego
   };
 
   /* ============================================================
@@ -59,6 +64,7 @@
   }
 
   function initConsent() {
+    if (!ADS_ENABLED) return;
     if (isPlaceholder) return;
 
     const stored = getConsent();
@@ -136,6 +142,7 @@
    * Si está en modo placeholder devuelve una caja cómica.
    */
   function makeBanner(slotKey) {
+    if (!ADS_ENABLED) return null;
     if (isPlaceholder) return makePlaceholderBox('ad-banner');
 
     const wrap = document.createElement('div');
@@ -157,6 +164,7 @@
    * Visualmente ocupa una celda del grid con la etiqueta "Publicidad".
    */
   function makeNative() {
+    if (!ADS_ENABLED) return null;
     if (isPlaceholder) return makePlaceholderBox('ad-native');
 
     const wrap = document.createElement('div');
@@ -184,6 +192,7 @@
      Monta los banners superior e inferior si existen en el DOM.
      ============================================================ */
   function mountHubBanners() {
+    if (!ADS_ENABLED) return;
     const top    = document.getElementById('ad-top');
     const bottom = document.getElementById('ad-bottom');
     if (top)    top.appendChild(makeBanner('topBanner'));

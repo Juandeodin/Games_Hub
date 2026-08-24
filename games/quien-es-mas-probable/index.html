@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quién es más probable — Juegos de Juan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/ads.css" />
+  <link rel="stylesheet" href="../../css/game-engine.css?v=3" />
+  <script>
+  window.GAME_CONFIG = {
+    id:          'quien-es-mas-probable',
+    title:       '¿QUIÉN ES\nMÁS PROBABLE?',
+    bgColor:     '#ff7200',
+    phraseLabel: '¿QUIÉN ES MÁS PROBABLE QUE...',
+    intro:       'Se lee la frase y, <b>a la de tres, todos señaláis a la vez</b> a quien creáis.<br>El más votado bebe un trago. <b>¿Empate?</b> Beben los dos.',
+    endIcon:     '👉',
+    endText:     '¡Se acabaron\nlas frases!',
+    endSubtext:  'Ya sabéis demasiado los unos de los otros…',
+    apiEndpoint:    '/api/frases?juego=quien-es-mas-probable',
+    configEndpoint: '/api/config?juego=quien-es-mas-probable',
+    userPhrases: {
+      id:          'mis',
+      name:        'Mis frases',
+      emoji:       '✏️',
+      desc:        'Las frases que has creado tú',
+      hint:        'sin "¿Quién es más probable que"',
+      placeholder: '…se quede dormido en el sofá',
+    },
+    categories: [
+      { id: 'amigos',  name: 'Amigos',      emoji: '👥', desc: 'Del grupo y del día a día. Para todos los públicos.' },
+      { id: 'fiesta',  name: 'Fiesta',      emoji: '🎉', desc: 'Borracheras, noches locas y caos total.'            },
+      { id: 'picante', name: 'Picante +18', emoji: '🔥', desc: 'Solo para adultos. Contenido subido de tono.'       },
+    ],
+    fallback: [
+      { texto: 'se quede dormido en el cine',            categoria: 'amigos'  },
+      { texto: 'llegue tarde a su propia boda',          categoria: 'amigos'  },
+      { texto: 'se pierda usando el GPS',                categoria: 'amigos'  },
+      { texto: 'acabe bailando encima de la barra',      categoria: 'fiesta'  },
+      { texto: 'sea el primero en caer borracho',        categoria: 'fiesta'  },
+      { texto: 'llame a su ex de madrugada',             categoria: 'fiesta'  },
+      { texto: 'mande un nude por error',                categoria: 'picante' },
+      { texto: 'se líe con alguien del grupo',           categoria: 'picante' },
+      { texto: 'tenga el historial más sucio',           categoria: 'picante' },
+    ],
+  };
+  </script>
+  <script src="../../js/ads.js" defer></script>
+  <script src="../../js/game-engine.js?v=3" defer></script>
+</head>
+<body></body>
+</html>

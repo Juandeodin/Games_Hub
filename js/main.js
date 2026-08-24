@@ -56,7 +56,13 @@ function buildCard(game, index) {
   imgDiv.className = 'card-image';
   imgDiv.style.backgroundColor = bgColor;
 
-  if (game.image) {
+  if (game.emoji) {
+    const emoji = document.createElement('span');
+    emoji.className = 'card-emoji';
+    emoji.setAttribute('aria-hidden', 'true');
+    emoji.textContent = game.emoji;
+    imgDiv.appendChild(emoji);
+  } else if (game.image) {
     const testImg = new Image();
     testImg.onload  = () => { imgDiv.style.backgroundImage = `url('${game.image}')`; };
     testImg.onerror = () => { /* mantiene el color plano */ };

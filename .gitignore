@@ -1,0 +1,11 @@
+# Secretos — NUNCA commitear
+.env
+
+# Base de datos SQLite (legado, sustituida por los JSON de /data)
+*.db
+
+# Dependencias
+node_modules/
+
+# Datos de contenido en desarrollo (los de producción viven en el bind mount)
+datos-juegos/

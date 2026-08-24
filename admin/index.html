@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Admin — Juegos de Juan</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,15 +32,10 @@
       padding: 32px 20px 60px;
     }
 
-    .container { max-width: 720px; margin: 0 auto; }
+    .container { max-width: 1100px; margin: 0 auto; }
 
     /* ── Header ──────────────────────────────── */
-    .page-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
+    .page-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
 
     .logo-admin {
       width: 60px; height: 60px;
@@ -74,10 +70,12 @@
       margin-bottom: 20px;
     }
 
-    /* ── Login ─────────────────────────────────── */
+    .card-login { max-width: 460px; margin-inline: auto; }
+
+    /* ── Formulario ───────────────────────────── */
     .field { margin-bottom: 16px; }
     label.label { display: block; font-weight: 600; margin-bottom: 6px; }
-    input[type="password"], input[type="text"] {
+    input[type="password"] {
       width: 100%;
       font-family: 'Fredoka', sans-serif;
       font-size: 1rem;
@@ -89,6 +87,19 @@
       background: #fafafa;
     }
     input:focus { border-color: var(--morado); }
+
+    select {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      border: var(--borde);
+      border-radius: 10px;
+      padding: 8px 12px;
+      box-shadow: 3px 3px 0 var(--negro);
+      background: var(--blanco);
+      cursor: pointer;
+      outline: none;
+    }
 
     /* ── Botones ─────────────────────────────── */
     .btn {
@@ -102,57 +113,92 @@
       box-shadow: 4px 4px 0 var(--negro);
       transition: transform .1s, box-shadow .1s;
     }
-    .btn:hover  { transform: translateY(-2px); box-shadow: 6px 6px 0 var(--negro); }
-    .btn:active { transform: translate(4px,4px); box-shadow: none; }
-    .btn-primary  { background: var(--morado); color: var(--blanco); }
-    .btn-approve  { background: var(--verde); color: var(--blanco); font-size: .95rem; padding: 7px 16px; }
-    .btn-reject   { background: var(--rojo);  color: var(--blanco); font-size: .95rem; padding: 7px 16px; }
-    .btn-logout   { background: #eee; color: var(--negro); font-size: .9rem; padding: 6px 14px; }
-    .btn-full { width: 100%; }
+    .btn:hover:not(:disabled)  { transform: translateY(-2px); box-shadow: 6px 6px 0 var(--negro); }
+    .btn:active:not(:disabled) { transform: translate(4px,4px); box-shadow: none; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-primary { background: var(--morado); color: var(--blanco); }
+    .btn-save    { background: var(--verde);  color: var(--blanco); }
+    .btn-small   { background: #eee; color: var(--negro); font-size: .9rem; padding: 6px 14px; }
+    .btn-full    { width: 100%; }
 
-    /* ── Lista de sugerencias ─────────────────── */
-    #list { display: flex; flex-direction: column; gap: 16px; }
+    /* ── Toolbar ─────────────────────────────── */
+    .toolbar {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .toolbar .spacer { margin-left: auto; }
+    .toolbar h2 { font-family: 'Bangers', cursive; font-size: 1.4rem; letter-spacing: 1px; }
 
-    .suggestion-item {
+    /* ── Editor ──────────────────────────────── */
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    #editor {
+      width: 100%;
+      min-height: 540px;
+      font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+      font-size: .85rem;
+      line-height: 1.5;
+      border: var(--borde);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      background: #fafafa;
+      resize: vertical;
+      outline: none;
+      tab-size: 2;
+      white-space: pre;
+      overflow-wrap: normal;
+      overflow-x: auto;
+    }
+    #editor:focus { border-color: var(--morado); }
+    #editor.invalid { border-color: var(--rojo); background: #fff5f5; }
+
+    .side { display: flex; flex-direction: column; gap: 16px; }
+
+    .panel {
       background: var(--blanco);
       border: var(--borde);
-      border-radius: 14px;
+      border-radius: 12px;
       box-shadow: 5px 5px 0 var(--negro);
-      padding: 18px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      padding: 16px 18px;
     }
-
-    .s-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-
-    .cat-badge {
+    .panel h3 {
       font-family: 'Bangers', cursive;
-      font-size: .85rem;
+      font-size: 1.1rem;
       letter-spacing: 1px;
-      padding: 2px 10px;
-      border: 3px solid var(--negro);
-      border-radius: 6px;
-      box-shadow: 2px 2px 0 var(--negro);
-    }
-    .cat-suave   { background: var(--amarillo); color: var(--negro); }
-    .cat-fiesta  { background: var(--azul);     color: var(--blanco); }
-    .cat-picante { background: var(--rojo);     color: var(--blanco); }
-
-    .s-date { font-size: .8rem; color: #888; margin-left: auto; }
-
-    .s-text {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--negro);
-      line-height: 1.4;
+      margin-bottom: 12px;
     }
 
-    .s-actions { display: flex; gap: 10px; }
+    .count-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 0;
+      font-size: .9rem;
+      border-bottom: 1px dashed #ddd;
+    }
+    .count-row:last-child { border-bottom: 0; }
+    .count-row .n { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .count-total {
+      margin-top: 10px; padding-top: 10px;
+      border-top: 3px solid var(--negro);
+      display: flex; font-weight: 600;
+    }
+    .count-total .n { margin-left: auto; font-variant-numeric: tabular-nums; }
+
+    .syntax { font-size: .85rem; font-weight: 600; padding: 8px 10px; border-radius: 8px; }
+    .syntax.ok  { background: #d1fae5; color: #065f46; }
+    .syntax.bad { background: #fee2e2; color: #991b1b; }
+
+    .hint { font-size: .78rem; color: #777; line-height: 1.5; }
+    .hint code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; }
 
     /* ── Estados ─────────────────────────────── */
     #status {
-      padding: 10px 16px;
+      padding: 12px 16px;
       border-radius: 10px;
       font-weight: 600;
       font-size: .95rem;
@@ -161,37 +207,16 @@
     }
     #status.ok    { background: #d1fae5; color: #065f46; border: 3px solid var(--verde); display: block; }
     #status.error { background: #fee2e2; color: #991b1b; border: 3px solid var(--rojo);  display: block; }
+    #status ul { margin: 8px 0 0 20px; font-weight: 400; }
+    #status li { margin-bottom: 4px; }
 
-    .empty {
-      text-align: center;
-      padding: 32px;
-      font-size: 1.1rem;
-      color: #888;
-    }
-
-    /* ── Toolbar ─────────────────────────────── */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .toolbar h2 {
-      font-family: 'Bangers', cursive;
-      font-size: 1.5rem;
-      letter-spacing: 1px;
-    }
-
-    .back-link {
-      font-weight: 600;
-      color: var(--morado);
-      text-decoration: none;
-      font-size: .9rem;
-    }
+    .back-link { font-weight: 600; color: var(--morado); text-decoration: none; font-size: .9rem; }
     .back-link:hover { text-decoration: underline; }
+
+    @media (max-width: 780px) {
+      .editor-grid { grid-template-columns: 1fr; }
+      #editor { min-height: 380px; }
+    }
   </style>
 </head>
 <body>
@@ -200,36 +225,64 @@
     <div class="page-header">
       <div class="logo-admin">JJ</div>
       <div>
-        <h1>Panel de moderación</h1>
-        <p class="sub">Aprueba o rechaza las frases enviadas por los usuarios</p>
+        <h1>Panel de administración</h1>
+        <p class="sub">Edita las frases y categorías de cada juego</p>
       </div>
     </div>
 
-    <!-- LOGIN -->
-    <div id="section-login" class="card">
-      <div class="field">
-        <label class="label" for="token-input">Token de administrador</label>
-        <input type="password" id="token-input" placeholder="••••••••••" autocomplete="current-password" />
+    <!-- ── Login ── -->
+    <div id="section-login">
+      <div class="card card-login">
+        <div class="field">
+          <label class="label" for="token-input">Token de administrador</label>
+          <input type="password" id="token-input" placeholder="••••••••••••" autocomplete="current-password" />
+        </div>
+        <div id="login-error" style="display:none;color:#991b1b;font-weight:600;margin-bottom:12px"></div>
+        <button class="btn btn-primary btn-full" id="btn-login">🔐 Entrar</button>
       </div>
-      <div id="login-error" style="color:var(--rojo);font-weight:600;margin-bottom:12px;display:none"></div>
-      <button class="btn btn-primary btn-full" onclick="Admin.login()">🔐 Entrar</button>
     </div>
 
-    <!-- PANEL -->
+    <!-- ── Panel ── -->
     <div id="section-panel" style="display:none">
       <div class="toolbar">
-        <h2>Sugerencias pendientes <span id="pending-count"></span></h2>
-        <div style="display:flex;gap:10px;align-items:center">
-          <button class="btn btn-primary" onclick="Admin.load()" style="font-size:.9rem;padding:7px 16px">
-            🔄 Recargar
-          </button>
-          <button class="btn btn-logout" onclick="Admin.logout()">Cerrar sesión</button>
+        <h2>Juego:</h2>
+        <select id="game-select" aria-label="Juego a editar"></select>
+        <button class="btn btn-small" id="btn-reload">🔄 Recargar</button>
+        <span class="spacer"></span>
+        <button class="btn btn-small" id="btn-logout">Cerrar sesión</button>
+      </div>
+
+      <div id="status" role="status" aria-live="polite"></div>
+
+      <div class="editor-grid">
+        <textarea id="editor" spellcheck="false" aria-label="Contenido JSON del juego"></textarea>
+
+        <div class="side">
+          <div class="panel">
+            <h3>Resumen</h3>
+            <div id="counts"></div>
+          </div>
+
+          <div id="syntax" class="syntax ok">✓ JSON válido</div>
+
+          <button class="btn btn-save btn-full" id="btn-save">💾 Guardar</button>
+
+          <div class="panel">
+            <h3>Formato</h3>
+            <p class="hint">
+              <code>categorias</code>: cada una con <code>id</code> (minúsculas,
+              números y guiones), <code>name</code>, <code>emoji</code> y
+              <code>desc</code>.<br><br>
+              <code>frases</code>: <code>texto</code> (5–200 caracteres, sin el
+              enunciado del juego) y <code>categoria</code>, que debe existir
+              arriba.<br><br>
+              Si borras una categoría, primero mueve o elimina sus frases.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div id="status"></div>
-      <div id="list"></div>
-      <a href="../index.html" class="back-link">← Volver al hub</a>
+      <p style="margin-top:24px"><a class="back-link" href="../index.html">← Volver al hub</a></p>
     </div>
 
   </div>
@@ -239,154 +292,251 @@
     'use strict';
 
     const STORAGE_KEY = 'jj_admin_token';
-    let token = '';
+    let juegoActual = null;
+    let guardado = '';        // última versión conocida como guardada
+    let statusTimer = null;
 
-    function showStatus(msg, type) {
-      const el = document.getElementById('status');
+    const $ = id => document.getElementById(id);
+
+    function token() { return sessionStorage.getItem(STORAGE_KEY) || ''; }
+
+    function api(ruta, opciones) {
+      return fetch(`/api${ruta}`, Object.assign({}, opciones, {
+        headers: Object.assign(
+          { 'Authorization': `Bearer ${token()}` },
+          (opciones && opciones.body) ? { 'Content-Type': 'application/json' } : {}
+        ),
+      })).catch(() => null);
+    }
+
+    // ── Avisos ────────────────────────────────────────────────────
+    function showStatus(msg, tipo, problemas) {
+      const el = $('status');
       el.textContent = msg;
-      el.className = type; // 'ok' | 'error'
-      setTimeout(() => { el.style.display = 'none'; el.className = ''; }, 4000);
+      if (problemas && problemas.length) {
+        const ul = document.createElement('ul');
+        problemas.forEach(p => {
+          const li = document.createElement('li');
+          li.textContent = p;          // textContent → sin XSS
+          ul.appendChild(li);
+        });
+        el.appendChild(ul);
+      }
+      el.className = tipo;
+      clearTimeout(statusTimer);
+      if (tipo === 'ok') statusTimer = setTimeout(() => { el.className = ''; }, 4000);
     }
 
+    function clearStatus() { clearTimeout(statusTimer); $('status').className = ''; }
+
+    // ── Login ─────────────────────────────────────────────────────
     async function login() {
-      const input = document.getElementById('token-input');
-      const err   = document.getElementById('login-error');
-      token = input.value.trim();
-      err.style.display = 'none';
+      const t = $('token-input').value.trim();
+      if (!t) return;
+      sessionStorage.setItem(STORAGE_KEY, t);
 
-      if (!token) { err.textContent = 'Introduce el token.'; err.style.display = 'block'; return; }
-
-      // Verificar el token haciendo una llamada real
-      const res = await fetch('/api/admin/sugerencias', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }).catch(() => null);
-
-      if (!res || res.status === 401) {
-        err.textContent = 'Token incorrecto.';
-        err.style.display = 'block';
-        token = '';
+      // Sonda: si el listado responde 401 el token es incorrecto.
+      const res = await api('/admin/juegos');
+      if (!res) { loginError('No se ha podido conectar con el servidor.'); return; }
+      if (res.status === 503) {
+        loginError('La administración está deshabilitada en el servidor (falta ADMIN_TOKEN).');
+        sessionStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      if (res.status === 429) { loginError('Demasiados intentos. Espera un minuto.'); return; }
+      if (!res.ok) {
+        sessionStorage.removeItem(STORAGE_KEY);
+        loginError('Token incorrecto.');
         return;
       }
 
-      sessionStorage.setItem(STORAGE_KEY, token);
-      document.getElementById('section-login').style.display  = 'none';
-      document.getElementById('section-panel').style.display  = 'block';
-      renderList(await res.json());
+      $('login-error').style.display = 'none';
+      $('token-input').value = '';
+      await entrar(await res.json());
     }
 
-    async function load() {
-      const res = await fetch('/api/admin/sugerencias', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }).catch(() => null);
-
-      if (!res) { showStatus('Error de red.', 'error'); return; }
-      if (res.status === 401) { logout(); return; }
-      renderList(await res.json());
-    }
-
-    function renderList(items) {
-      const list = document.getElementById('list');
-      const count = document.getElementById('pending-count');
-      count.textContent = items.length ? `(${items.length})` : '';
-
-      if (items.length === 0) {
-        list.innerHTML = '<div class="empty">🎉 No hay frases pendientes</div>';
-        return;
-      }
-
-      list.innerHTML = '';
-      items.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'suggestion-item';
-        div.id = `item-${item.id}`;
-
-        const catClass = { suave: 'cat-suave', fiesta: 'cat-fiesta', picante: 'cat-picante' }[item.categoria] || '';
-        const catEmoji = { suave: '🍺', fiesta: '🎉', picante: '🔥' }[item.categoria] || '';
-        const fecha = new Date(item.creada).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
-
-        const header = document.createElement('div');
-        header.className = 's-header';
-        const badge = document.createElement('span');
-        badge.className = `cat-badge ${catClass}`;
-        badge.textContent = `${catEmoji} ${item.categoria.toUpperCase()}`;
-        const date = document.createElement('span');
-        date.className = 's-date';
-        date.textContent = fecha;
-        header.appendChild(badge);
-        header.appendChild(date);
-
-        const text = document.createElement('p');
-        text.className = 's-text';
-        text.textContent = 'Yo nunca he ' + item.texto; // textContent → sin XSS
-
-        const actions = document.createElement('div');
-        actions.className = 's-actions';
-
-        const btnA = document.createElement('button');
-        btnA.className = 'btn btn-approve';
-        btnA.textContent = '✅ Aprobar';
-        btnA.onclick = () => moderate(item.id, 'aprobar', div);
-
-        const btnR = document.createElement('button');
-        btnR.className = 'btn btn-reject';
-        btnR.textContent = '❌ Rechazar';
-        btnR.onclick = () => moderate(item.id, 'rechazar', div);
-
-        actions.appendChild(btnA);
-        actions.appendChild(btnR);
-
-        div.appendChild(header);
-        div.appendChild(text);
-        div.appendChild(actions);
-        list.appendChild(div);
-      });
-    }
-
-    async function moderate(id, action, itemEl) {
-      const res = await fetch(`/api/admin/sugerencias/${id}/${action}`, {
-        method:  'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      }).catch(() => null);
-
-      if (!res) { showStatus('Error de red.', 'error'); return; }
-      if (!res.ok) { showStatus('Error al procesar.', 'error'); return; }
-
-      showStatus(action === 'aprobar' ? '✅ Frase aprobada' : '❌ Frase rechazada', 'ok');
-      itemEl.style.transition = 'opacity .3s';
-      itemEl.style.opacity = '0';
-      setTimeout(() => itemEl.remove(), 300);
-
-      const remaining = document.querySelectorAll('.suggestion-item').length - 1;
-      const count = document.getElementById('pending-count');
-      count.textContent = remaining ? `(${remaining})` : '';
-      if (remaining === 0) {
-        document.getElementById('list').innerHTML = '<div class="empty">🎉 No hay frases pendientes</div>';
-      }
+    function loginError(msg) {
+      const el = $('login-error');
+      el.textContent = msg;
+      el.style.display = 'block';
     }
 
     function logout() {
       sessionStorage.removeItem(STORAGE_KEY);
-      token = '';
-      document.getElementById('section-login').style.display  = 'block';
-      document.getElementById('section-panel').style.display  = 'none';
-      document.getElementById('token-input').value = '';
+      guardado = $('editor').value;   // evita el aviso de cambios sin guardar
+      location.reload();
     }
 
-    // Auto-login si hay token en sesión
-    window.addEventListener('DOMContentLoaded', () => {
-      const saved = sessionStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        token = saved;
-        document.getElementById('section-login').style.display = 'none';
-        document.getElementById('section-panel').style.display = 'block';
-        load();
-      }
-      document.getElementById('token-input').addEventListener('keydown', e => {
-        if (e.key === 'Enter') login();
+    // ── Carga ─────────────────────────────────────────────────────
+    async function entrar(juegos) {
+      $('section-login').style.display = 'none';
+      $('section-panel').style.display = 'block';
+
+      const sel = $('game-select');
+      sel.textContent = '';
+      juegos.forEach(j => {
+        const opt = document.createElement('option');
+        opt.value = j;
+        opt.textContent = j;
+        sel.appendChild(opt);
       });
+
+      if (!juegos.length) { showStatus('No hay juegos en la carpeta de datos.', 'error'); return; }
+      juegoActual = juegos[0];
+      await cargar();
+    }
+
+    async function cargar() {
+      juegoActual = $('game-select').value || juegoActual;
+      const res = await api(`/admin/juego/${encodeURIComponent(juegoActual)}`);
+      if (!res) { showStatus('Sin conexión con el servidor.', 'error'); return; }
+      if (res.status === 401) { logout(); return; }
+      if (!res.ok) { showStatus('No se ha podido cargar el juego.', 'error'); return; }
+
+      const doc = await res.json();
+      const txt = JSON.stringify(doc, null, 2);
+      $('editor').value = txt;
+      guardado = txt;
+      clearStatus();
+      revisar();
+    }
+
+    // ── Validación en vivo ────────────────────────────────────────
+    function revisar() {
+      const txt = $('editor').value;
+      const syn = $('syntax');
+      const ed  = $('editor');
+      let doc = null;
+
+      try {
+        doc = JSON.parse(txt);
+      } catch (err) {
+        syn.className = 'syntax bad';
+        syn.textContent = '✕ ' + err.message;
+        ed.classList.add('invalid');
+        $('btn-save').disabled = true;
+        $('counts').textContent = '—';
+        return;
+      }
+
+      syn.className = 'syntax ok';
+      syn.textContent = '✓ JSON válido';
+      ed.classList.remove('invalid');
+      $('btn-save').disabled = false;
+      pintarConteos(doc);
+    }
+
+    function pintarConteos(doc) {
+      const cont = $('counts');
+      cont.textContent = '';
+
+      const cats   = Array.isArray(doc.categorias) ? doc.categorias : [];
+      const frases = Array.isArray(doc.frases) ? doc.frases : [];
+
+      const porCat = new Map();
+      frases.forEach(f => {
+        const k = f && typeof f.categoria === 'string' ? f.categoria : '(sin categoría)';
+        porCat.set(k, (porCat.get(k) || 0) + 1);
+      });
+
+      const conocidas = new Set();
+      cats.forEach(c => {
+        if (!c || typeof c.id !== 'string') return;
+        conocidas.add(c.id);
+        cont.appendChild(fila(`${c.emoji || ''} ${c.id}`, porCat.get(c.id) || 0));
+      });
+
+      // Categorías referenciadas por frases pero inexistentes: el problema
+      // que el servidor rechazará al guardar. Mejor verlo antes.
+      porCat.forEach((n, k) => {
+        if (conocidas.has(k)) return;
+        const row = fila(`⚠️ ${k}`, n);
+        row.style.color = '#991b1b';
+        cont.appendChild(row);
+      });
+
+      const total = document.createElement('div');
+      total.className = 'count-total';
+      const et = document.createElement('span'); et.textContent = 'Total';
+      const nn = document.createElement('span'); nn.className = 'n'; nn.textContent = String(frases.length);
+      total.append(et, nn);
+      cont.appendChild(total);
+    }
+
+    function fila(etiqueta, n) {
+      const row = document.createElement('div');
+      row.className = 'count-row';
+      const a = document.createElement('span'); a.textContent = etiqueta;
+      const b = document.createElement('span'); b.className = 'n'; b.textContent = String(n);
+      row.append(a, b);
+      return row;
+    }
+
+    // ── Guardar ───────────────────────────────────────────────────
+    async function guardar_() {
+      let doc;
+      try {
+        doc = JSON.parse($('editor').value);
+      } catch (err) {
+        showStatus('El JSON no es válido: ' + err.message, 'error');
+        return;
+      }
+
+      const btn = $('btn-save');
+      btn.disabled = true;
+      const res = await api(`/admin/juego/${encodeURIComponent(juegoActual)}`, {
+        method: 'PUT',
+        body: JSON.stringify(doc),
+      });
+      btn.disabled = false;
+
+      if (!res) { showStatus('Sin conexión con el servidor.', 'error'); return; }
+      if (res.status === 401) { logout(); return; }
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        showStatus(data.error || 'No se ha podido guardar.', 'error', data.problemas);
+        return;
+      }
+
+      guardado = $('editor').value;
+      showStatus(`✅ Guardado: ${data.categorias} categorías, ${data.frases} frases.`, 'ok');
+    }
+
+    // ── Eventos ───────────────────────────────────────────────────
+    let debounce = null;
+    $('editor').addEventListener('input', () => {
+      clearTimeout(debounce);
+      debounce = setTimeout(revisar, 200);
     });
 
-    window.Admin = { login, load, logout };
+    $('btn-login').addEventListener('click', login);
+    $('token-input').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+    $('btn-reload').addEventListener('click', cargar);
+    $('btn-logout').addEventListener('click', logout);
+    $('btn-save').addEventListener('click', guardar_);
+    $('game-select').addEventListener('change', () => {
+      if (hayCambios() && !confirm('Hay cambios sin guardar. ¿Cambiar de juego igualmente?')) {
+        $('game-select').value = juegoActual;
+        return;
+      }
+      cargar();
+    });
+
+    function hayCambios() { return $('editor').value !== guardado; }
+
+    window.addEventListener('beforeunload', e => {
+      if (hayCambios()) { e.preventDefault(); e.returnValue = ''; }
+    });
+
+    // ── Arranque: sesión ya iniciada ──────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!token()) return;
+      const res = await api('/admin/juegos');
+      if (res && res.ok) await entrar(await res.json());
+      else sessionStorage.removeItem(STORAGE_KEY);
+    });
   }());
   </script>
 </body>
