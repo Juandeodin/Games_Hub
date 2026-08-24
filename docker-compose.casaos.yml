@@ -65,5 +65,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 300 juegos-juan juegos-api
     restart: unless-stopped
+    # La imagen ya define HEALTHCHECK ["CMD","/watchtower","--health-check"].
+    # Se declara explícitamente porque CasaOS da error si un contenedor no
+    # tiene ninguno ("has no healthcheck configured") — que es justo lo que
+    # provocaba el antiguo `healthcheck: disable: true`.
     healthcheck:
-      disable: true
+      test: ["CMD", "/watchtower", "--health-check"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

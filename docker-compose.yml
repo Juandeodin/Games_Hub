@@ -44,8 +44,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 300 juegos-juan juegos-api
     restart: unless-stopped
+    # La imagen ya define HEALTHCHECK ["CMD","/watchtower","--health-check"].
+    # Declararlo evita el error de CasaOS "has no healthcheck configured".
     healthcheck:
-      disable: true
+      test: ["CMD", "/watchtower", "--health-check"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 # El volumen `juegos-db` de la versión con SQLite ya no se usa. No se borra
 # solo: si quieres recuperar la BD antigua sigue ahí hasta que hagas
