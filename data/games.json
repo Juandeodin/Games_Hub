@@ -2,7 +2,7 @@
   {
     "id": "yo-nunca",
     "title": "Yo Nunca",
-    "description": "El clásico juego de beber. Salen frases y bebes si lo has hecho.",
+    "description": "El mejor para romper el hielo",
     "emoji": "🍺",
     "color": "#7c3aed",
     "type": "internal",
@@ -13,11 +13,22 @@
   {
     "id": "quien-es-mas-probable",
     "title": "Quién es más probable",
-    "description": "Señalad todos a la vez. El más votado bebe.",
+    "description": "Disfruta de señalar a tus amigos para que beban",
     "emoji": "👉",
     "color": "#ff7200",
     "type": "internal",
     "link": "games/quien-es-mas-probable/index.html",
+    "badge": "NUEVO",
+    "category": "Fiesta"
+  },
+  {
+    "id": "red-flag",
+    "title": "Red Flag",
+    "description": "Juego inventado por mi ¡Que salgan las Red Flags de tus amigos!",
+    "emoji": "🚩",
+    "color": "#ff3b3b",
+    "type": "internal",
+    "link": "games/red-flag/index.html",
     "badge": "NUEVO",
     "category": "Fiesta"
   }

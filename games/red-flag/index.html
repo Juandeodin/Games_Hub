@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red Flag — Juegos de Juan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/ads.css" />
+  <link rel="stylesheet" href="../../css/game-engine.css?v=3" />
+  <script>
+  window.GAME_CONFIG = {
+    id:          'red-flag',
+    title:       'RED FLAG',
+    bgColor:     '#ff3b3b',
+    phraseLabel: '🚩 RED FLAG:',
+    intro:       'Cada jugador, por turnos, dice una frase empezando por <b>"Red Flag..."</b>.<br> <i>Se puede jugar de distintas maneras:</i> Pueden beber las personas que <b>tengan</b> dicha red flag o pueden beber las personas que <b>hayan salido o salgan</b> con personas con esa red flag.<br>',
+    endIcon:     '🚩',
+    endText:     '¡Se acabaron\nlas red flags!',
+    endSubtext:  'Después de esto, mejor no volváis a llamar a nadie…',
+    apiEndpoint:    '/api/frases?juego=red-flag',
+    configEndpoint: '/api/config?juego=red-flag',
+    userPhrases: {
+      id:          'mis',
+      name:        'Mis frases',
+      emoji:       '✏️',
+      desc:        'Las red flags que has creado tú',
+      hint:        'escribe la red flag tal cual',
+      placeholder: 'Tener a su ex de fondo de pantalla',
+    },
+    categories: [
+      { id: 'relaciones', name: 'Relaciones', emoji: '💔', desc: 'Red flags de pareja y de citas.'                },
+      { id: 'amigos',     name: 'Amigos',     emoji: '👥', desc: 'Del grupo y del día a día. Para todos los públicos.' },
+      { id: 'picante',    name: 'Picante +18', emoji: '🔥', desc: 'Solo para adultos. Contenido subido de tono.'  },
+    ],
+    fallback: [
+      { texto: 'Seguir hablando con su ex todos los días',            categoria: 'relaciones' },
+      { texto: 'Decir que todas sus ex están locas',                  categoria: 'relaciones' },
+      { texto: 'Contestar «ok» y nada más',                           categoria: 'relaciones' },
+      { texto: 'No devolver nunca el dinero que le prestas',          categoria: 'amigos'     },
+      { texto: 'Ser maleducado con los camareros',                    categoria: 'amigos'     },
+      { texto: 'Cancelar los planes media hora antes por mensaje',    categoria: 'amigos'     },
+      { texto: 'Tener a su ex de fondo de pantalla',                  categoria: 'picante'    },
+      { texto: 'No borrar las apps de citas estando en pareja',       categoria: 'picante'    },
+      { texto: 'Escribir a las 3 de la mañana solo cuando le interesa', categoria: 'picante'  },
+    ],
+  };
+  </script>
+  <script src="../../js/ads.js" defer></script>
+  <script src="../../js/game-engine.js?v=3" defer></script>
+</head>
+<body></body>
+</html>

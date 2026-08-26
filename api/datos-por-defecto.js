@@ -120,4 +120,61 @@ module.exports = {
     ],
   },
 
+  'red-flag': {
+    categorias: [
+      { id: 'relaciones', name: 'Relaciones', emoji: '💔', desc: 'Red flags de pareja y de citas.' },
+      { id: 'amigos', name: 'Amigos', emoji: '👥', desc: 'Del grupo y del día a día. Para todos los públicos.' },
+      { id: 'picante', name: 'Picante +18', emoji: '🔥', desc: 'Solo para adultos. Contenido subido de tono.' },
+    ],
+    frases: [
+      // ── RELACIONES ──
+      { texto: 'Seguir hablando con su ex todos los días', categoria: 'relaciones' },
+      { texto: 'Decir que todas sus ex están locas', categoria: 'relaciones' },
+      { texto: 'Contestar «ok» y nada más', categoria: 'relaciones' },
+      { texto: 'Dejar en visto tres días y luego escribir «hey»', categoria: 'relaciones' },
+      { texto: 'No presentarte nunca a sus amigos', categoria: 'relaciones' },
+      { texto: 'Ponerse celoso de tus amigos de toda la vida', categoria: 'relaciones' },
+      { texto: 'Mirar el móvil de su pareja a escondidas', categoria: 'relaciones' },
+      { texto: 'Volver con su ex más de dos veces', categoria: 'relaciones' },
+      { texto: 'Decir «es que yo soy muy sincero» antes de soltar una barbaridad', categoria: 'relaciones' },
+      { texto: 'Hablar mal de ti delante de otros y llamarlo broma', categoria: 'relaciones' },
+      { texto: 'No haber pedido perdón nunca en su vida', categoria: 'relaciones' },
+      { texto: 'Querer saber siempre dónde estás y con quién', categoria: 'relaciones' },
+      { texto: 'Tener todas las conversaciones archivadas', categoria: 'relaciones' },
+      { texto: 'Enfadarse en silencio y esperar a que lo adivines', categoria: 'relaciones' },
+
+      // ── AMIGOS ──
+      { texto: 'No devolver nunca el dinero que le prestas', categoria: 'amigos' },
+      { texto: 'Llegar tarde siempre y encima sin avisar', categoria: 'amigos' },
+      { texto: 'Cancelar los planes media hora antes por mensaje', categoria: 'amigos' },
+      { texto: 'Contar secretos ajenos como si fueran suyos', categoria: 'amigos' },
+      { texto: 'No poner nunca la primera ronda', categoria: 'amigos' },
+      { texto: 'Hablar solo de sí mismo toda la noche', categoria: 'amigos' },
+      { texto: 'Ser maleducado con los camareros', categoria: 'amigos' },
+      { texto: 'Desaparecer semanas y volver como si nada', categoria: 'amigos' },
+      { texto: 'Reírse de sus amigos para hacerse el gracioso', categoria: 'amigos' },
+      { texto: 'Poner excusas para no pagar a medias', categoria: 'amigos' },
+      { texto: 'Tener drama con absolutamente todo el mundo', categoria: 'amigos' },
+      { texto: 'No saber perder a nada', categoria: 'amigos' },
+      { texto: 'Dejar el grupo tirado a mitad de la noche', categoria: 'amigos' },
+      { texto: 'Contar tus intimidades en el grupo de WhatsApp', categoria: 'amigos' },
+
+      // ── PICANTE ──
+      { texto: 'Tener a su ex de fondo de pantalla', categoria: 'picante' },
+      { texto: 'No borrar las apps de citas estando en pareja', categoria: 'picante' },
+      { texto: 'Mandar el mismo mensaje a cinco personas a la vez', categoria: 'picante' },
+      { texto: 'Guardar fotos de sus ex en el móvil', categoria: 'picante' },
+      { texto: 'Comparar en la cama con otra persona', categoria: 'picante' },
+      { texto: 'Preguntar por tu número en la primera cita', categoria: 'picante' },
+      { texto: 'Darse la vuelta y dormirse justo después', categoria: 'picante' },
+      { texto: 'Poner excusas para no dormir nunca en tu casa', categoria: 'picante' },
+      { texto: 'Tener un chat de «amigos» muy activo de madrugada', categoria: 'picante' },
+      { texto: 'Escribir a las 3 de la mañana solo cuando le interesa', categoria: 'picante' },
+      { texto: 'Contar detalles íntimos a todo su grupo', categoria: 'picante' },
+      { texto: 'Grabar o hacer fotos sin preguntar', categoria: 'picante' },
+      { texto: 'Enfadarse cuando le dices que no te apetece', categoria: 'picante' },
+      { texto: 'Presumir de su lista de conquistas', categoria: 'picante' },
+    ],
+  },
+
 };

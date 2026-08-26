@@ -29,11 +29,27 @@ function tokenDeEntorno() {
   }
   // Valores de ejemplo o publicados que nunca deben valer como contraseña,
   // incluido el default inseguro que traía la versión anterior de la API.
-  if (/^(cambia|changeme|tu-token|token|password|admin|secret|dev-token|pon-aqui|ponaqui)/i.test(bruto)) {
-    return { token: '', motivo: 'es un valor de ejemplo o conocido, cámbialo' };
+  //
+  // Se comparan COMPLETOS, no por prefijo: bloquear todo lo que empiece
+  // por "admin" o "password" tumbaría contraseñas legítimas como
+  // "administrador-de-juan-2024".
+  const PROHIBIDOS = new Set([
+    'password', 'admin', 'secret', 'token', 'changeme', 'contrasena', 'contraseña',
+    'dev-token-inseguro', 'cambia-esto-por-un-token-secreto', 'pon-aqui-tu-contrasena',
+  ]);
+  if (PROHIBIDOS.has(bruto.toLowerCase())) {
+    return { token: '', motivo: 'es un valor de ejemplo o conocido, elige otro' };
+  }
+  // Placeholders con relleno detrás ("cambia-esto-por-...", "PON-AQUI-...")
+  if (/^(cambia|changeme|pon-?aqui|tu-token)/i.test(bruto)) {
+    return { token: '', motivo: `parece un texto de ejemplo ("${bruto}"), escribe tu propia contraseña` };
   }
   if (bruto.length < TOKEN_MIN) {
-    return { token: '', motivo: `es demasiado corto (${bruto.length} caracteres, mínimo ${TOKEN_MIN})` };
+    return {
+      token: '',
+      motivo: `es demasiado corto: tiene ${bruto.length} caracteres y hacen falta al menos ${TOKEN_MIN}. ` +
+              `El panel es accesible desde internet; prueba con tres o cuatro palabras unidas por guiones`,
+    };
   }
   return { token: bruto, motivo: null };
 }

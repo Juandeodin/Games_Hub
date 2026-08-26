@@ -339,7 +339,11 @@
       const res = await api('/admin/juegos');
       if (!res) { loginError('No se ha podido conectar con el servidor.'); return; }
       if (res.status === 503) {
-        loginError('La administración está deshabilitada en el servidor (falta ADMIN_TOKEN).');
+        // El servidor explica POR QUÉ rechaza el ADMIN_TOKEN configurado
+        // (demasiado corto, sin interpolar, valor de ejemplo…). Mostrarlo
+        // tal cual: sin él no hay forma de saber qué corregir.
+        const d = await res.json().catch(() => ({}));
+        loginError(d.error || 'La administración está deshabilitada en el servidor.');
         sessionStorage.removeItem(STORAGE_KEY);
         return;
       }
