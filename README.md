@@ -97,6 +97,34 @@ Al abrir el sitio en producción, los visitantes ven un banner de cookies. Los a
 
 ---
 
+## Desplegar en el servidor
+
+Al hacer push a `main`, GitHub Actions construye las imágenes y las publica en
+GHCR. Bajarlas al servidor **es manual**: por SSH, en el host (no dentro de
+ningún contenedor).
+
+```sh
+FICHERO=$(docker inspect juegos-juan --format '{{index .Config.Labels "com.docker.compose.project.config_files"}}')
+PROYECTO=$(docker inspect juegos-juan --format '{{index .Config.Labels "com.docker.compose.project"}}')
+
+docker pull ghcr.io/juandeodin/juegos-juan-todo-en-uno:latest
+docker compose -p "$PROYECTO" -f "$FICHERO" up -d
+```
+
+La ruta del compose se le pregunta al propio contenedor en vez de escribirla a
+mano porque CasaOS la cambia de sitio entre versiones. Si `docker pull` dice
+`Image is up to date`, no hay nada nuevo que desplegar.
+
+Las frases viven en el volumen `juegos-datos`, fuera de la imagen, así que
+recrear el contenedor no las toca.
+
+> Antes esto lo hacía un contenedor de Watchtower. Se quitó porque se quedaba
+> `unhealthy` sin actualizar nada: no conseguía hablar con el socket de Docker
+> desde dentro del contenedor, y al estar su imagen construida sobre `scratch`
+> (sin shell) no había forma de entrar a mirar por qué.
+
+---
+
 ## Estructura del proyecto
 
 ```

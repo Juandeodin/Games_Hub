@@ -35,29 +35,11 @@ services:
       timeout: 5s
       retries: 3
 
-  # Watchtower detecta nuevas imágenes en GHCR cada 5 minutos
-  # y actualiza ambos contenedores automáticamente.
-  #
-  # Se usa el fork nickfedor/: el original containrrr/ está sin mantener
-  # desde 2023 y su cliente habla la API 1.25 de Docker, que los daemons
-  # modernos ya rechazan ("client version 1.25 is too old"). Con esa
-  # imagen el contenedor arranca, falla y muere — y con él el despliegue
-  # automático, en silencio si además se le quita el healthcheck.
-  watchtower:
-    image: nickfedor/watchtower:latest
-    container_name: watchtower-juegos
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 juegos-juan juegos-api
-    restart: unless-stopped
-    # La imagen ya define HEALTHCHECK ["CMD","/watchtower","--health-check"].
-    # Declararlo evita el error de CasaOS "has no healthcheck configured".
-    healthcheck:
-      test: ["CMD", "/watchtower", "--health-check"]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+  # Watchtower vivía aquí. Se quitó: en el servidor se quedaba
+  # "unhealthy" porque no podía hablar con /var/run/docker.sock, y su
+  # imagen `scratch` no tiene shell con la que entrar a depurarlo. Ya no
+  # hay despliegue automático; se hace a mano (ver README y el
+  # comentario largo en docker-compose.casaos.yml).
 
 # El volumen `juegos-db` de la versión con SQLite ya no se usa. No se borra
 # solo: si quieres recuperar la BD antigua sigue ahí hasta que hagas

@@ -7,7 +7,7 @@
     "color": "#7c3aed",
     "type": "internal",
     "link": "games/yo-nunca/index.html",
-    "badge": "NUEVO",
+    "badge": "",
     "category": "Fiesta"
   },
   {
@@ -29,18 +29,40 @@
     "color": "#ff3b3b",
     "type": "internal",
     "link": "games/red-flag/index.html",
-    "badge": "NUEVO",
+    "badge": "",
     "category": "Fiesta"
   },
   {
     "id": "es-un-10-pero",
     "title": "Es un 10 pero",
-    "description": "¿Cuánta nota le quitas por un solo defecto? Descubre lo exigentes que sois",
+    "description": "¿Cuánta nota le quitas por un solo defecto? Descubrid lo exigentes que sois",
     "emoji": "🔟",
     "color": "#1e90ff",
     "type": "internal",
     "link": "games/es-un-10-pero/index.html",
     "badge": "NUEVO",
     "category": "Fiesta"
+  },
+  {
+    "id": "transverse",
+    "title": "Tranverse",
+    "description": "Juego sobre la experiencia de la transfobia en discotecas",
+    "emoji": "🏳️‍⚧️",
+    "color": "#ff69b4",
+    "type": "external",
+    "link": "https://juandeodin.itch.io/transverse",
+    "badge": "EXTERNO",
+    "category": "Descargables"
+  },
+  {
+    "id": "universidad-dani",
+    "title": "Universidad Dani",
+    "description": "Otome sobre las peripecias de dani en la universidad",
+    "emoji": "🎓",
+    "color": "#00ff00",
+    "type": "external",
+    "link": "https://juandeodin.itch.io/universidad-dani",
+    "badge": "EXTERNO",
+    "category": "Descargables"
   }
 ]
