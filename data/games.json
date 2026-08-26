@@ -2,7 +2,7 @@
   {
     "id": "yo-nunca",
     "title": "Yo Nunca",
-    "description": "El mejor para romper el hielo",
+    "description": "El mejor para romper el hielo. Un clásico de los juegos de beber.",
     "emoji": "🍺",
     "color": "#7c3aed",
     "type": "internal",
@@ -24,11 +24,22 @@
   {
     "id": "red-flag",
     "title": "Red Flag",
-    "description": "Juego inventado por mi ¡Que salgan las Red Flags de tus amigos!",
+    "description": "Que salgan a relucir las las Red Flags de tus amigos",
     "emoji": "🚩",
     "color": "#ff3b3b",
     "type": "internal",
     "link": "games/red-flag/index.html",
+    "badge": "NUEVO",
+    "category": "Fiesta"
+  },
+  {
+    "id": "es-un-10-pero",
+    "title": "Es un 10 pero",
+    "description": "¿Cuánta nota le quitas por un solo defecto? Descubre lo exigentes que sois",
+    "emoji": "🔟",
+    "color": "#1e90ff",
+    "type": "internal",
+    "link": "games/es-un-10-pero/index.html",
     "badge": "NUEVO",
     "category": "Fiesta"
   }

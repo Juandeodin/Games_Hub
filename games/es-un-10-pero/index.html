@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Es un 10 pero — Juegos de Juan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/ads.css" />
+  <link rel="stylesheet" href="../../css/game-engine.css?v=3" />
+  <script>
+  window.GAME_CONFIG = {
+    id:          'es-un-10-pero',
+    title:       'ES UN 10\nPERO',
+    bgColor:     '#1e90ff',
+    phraseLabel: '🔟 ES UN 10 PERO...',
+    intro:       'Sale una frase y cada jugador dice <b>del 1 al 10</b> qué nota le quedaría a esa persona que es un 10 pero tiene ese "defecto".<br> <i>Se puede jugar de distintas maneras:</i> por turnos diciendo la nota en voz alta, o <b>a la vez</b> contando hasta tres — el que dé la nota más alta y más baja se explican.<br>',
+    endIcon:     '🔟',
+    endText:     '¡Se acabaron\nlos peros!',
+    endSubtext:  'Con todo esto, ya nadie de aquí llega al 10…',
+    apiEndpoint:    '/api/frases?juego=es-un-10-pero',
+    configEndpoint: '/api/config?juego=es-un-10-pero',
+    userPhrases: {
+      id:          'mis',
+      name:        'Mis frases',
+      emoji:       '✏️',
+      desc:        'Los "peros" que has creado tú',
+      hint:        'escribe el "pero" tal cual, sin repetir «es un 10 pero»',
+      placeholder: 'Pone piña en la pizza',
+    },
+    categories: [
+      { id: 'manias',  name: 'Manías',      emoji: '🤏', desc: 'Rarezas del día a día. Para todos los públicos.'   },
+      { id: 'fuerte',  name: 'Deal breakers', emoji: '💀', desc: 'Defectos serios. Aquí se baja del 10 al 2.'       },
+      { id: 'picante', name: 'Picante +18', emoji: '🔥', desc: 'Solo para adultos. Contenido subido de tono.'      },
+    ],
+    fallback: [
+      { texto: 'Pone piña en la pizza',                          categoria: 'manias'  },
+      { texto: 'Manda notas de voz de cinco minutos',            categoria: 'manias'  },
+      { texto: 'Mastica con la boca abierta',                    categoria: 'manias'  },
+      { texto: 'No se lava las manos al salir del baño',         categoria: 'fuerte'  },
+      { texto: 'Habla mal de todo el mundo a sus espaldas',      categoria: 'fuerte'  },
+      { texto: 'No ha leído un libro en su vida y presume',      categoria: 'fuerte'  },
+      { texto: 'Se duerme siempre justo después',                categoria: 'picante' },
+      { texto: 'Tiene fotos de sus ex guardadas en el móvil',    categoria: 'picante' },
+      { texto: 'Cuenta sus intimidades a todo su grupo',         categoria: 'picante' },
+    ],
+  };
+  </script>
+  <script src="../../js/ads.js" defer></script>
+  <script src="../../js/game-engine.js?v=3" defer></script>
+</head>
+<body></body>
+</html>
