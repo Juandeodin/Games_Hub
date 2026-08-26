@@ -51,7 +51,7 @@
     "color": "#ff69b4",
     "type": "external",
     "link": "https://juandeodin.itch.io/transverse",
-    "badge": "EXTERNO",
+    "badge": "",
     "category": "Descargables"
   },
   {
@@ -62,7 +62,7 @@
     "color": "#00ff00",
     "type": "external",
     "link": "https://juandeodin.itch.io/universidad-dani",
-    "badge": "EXTERNO",
+    "badge": "",
     "category": "Descargables"
   }
 ]
