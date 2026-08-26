@@ -60,7 +60,8 @@ If you ever reintroduce it: the blocker was socket access, not the image. The `n
 Games_Hub/
 ├── index.html              # Hub landing page — dynamically renders game grid
 ├── games/                  # One subdirectory per game (standalone HTML pages)
-│   └── yo-nunca/           # "Never Have I Ever" drinking game
+│   ├── yo-nunca/           # "Never Have I Ever" drinking game
+│   └── picolo/             # Uses GAME_CONFIG.players — asks for names, fills them into phrases
 ├── admin/index.html        # Content editor (token-gated) — edits the JSON per game
 ├── api/                    # Node.js Express backend (no database)
 │   ├── server.js           # All routes
@@ -102,8 +103,20 @@ Card/phrase-style games (Yo Nunca, Quién es más probable, Verdad o Reto…) al
 | `apiEndpoint` | string | GET endpoint for phrases (`categorias=…` appended with `?` or `&`, so the URL may already carry a query — e.g. `/api/frases?juego=<slug>`) |
 | `configEndpoint` | string | GET endpoint for the game's categories (`/api/config?juego=<slug>`) |
 | `userPhrases` | `{id, name, emoji, desc, hint, placeholder}`? | Local "Mis frases" pseudo-category — omit to hide that feature |
+| `players` | `{min, max, title, hint, storageKey}`? | Asks for player names before playing and substitutes them into the phrases — omit for the classic flow. See **Games with player names** below |
 | `categories` | `{id, name, emoji, desc}[]` | **Offline fallback only.** The live categories come from `configEndpoint`, so they can be edited in `/admin/` without touching code. These are used when the API is unreachable |
 | `fallback` | `{texto, categoria}[]` | Offline fallback phrases |
+
+### Games with player names
+
+`GAME_CONFIG.players` (Picolo) inserts a **name screen between the home screen and the categories**: `inicio → jugadores → cats → game`. Without the field none of it exists — no extra screen, no extra buttons, `btn-empezar` goes straight to the categories as before. That's the acceptance criterion whenever the engine is touched.
+
+Phrases then carry **name slots**: `{1}`, `{2}`, `{3}`… The same number is always the same player within one phrase; **different numbers are guaranteed to be different players**. This is a plain text convention — `api/store.js` neither knows nor validates it, so nothing changes server-side and `/admin/` edits these phrases like any other.
+
+- A phrase with N distinct slots needs N players. If the party has fewer, **the phrase is dropped** when the deck is built (`huecosDe()`), including phrases from "Mis frases". If that empties the deck, the engine stays on the category screen and says why in `#cats-error` instead of jumping to a baffling end screen.
+- Names are handed out from a **rotating bag** (a shuffled list, only reshuffled once exhausted), not by drawing at random per slot — pure random leaves somebody out of a whole game. "Otra ronda" reassigns, so the second pass doesn't repeat the same pairings.
+- `renderPhrase()` therefore writes `innerHTML`, not `textContent`. Both the phrase and the player name go through `esc()` before the `<span class="jugador">` is built — escaping first is safe because `esc()` touches neither braces nor digits.
+- Names live in `localStorage` under `players.storageKey` (default `jj_jugadores`, **shared across games** so the same crew doesn't retype them), never on the server — same rule as "Mis frases".
 
 **API endpoints** (all prefixed `/api/`, proxied by nginx to `http://juegos-api:3000/`):
 
@@ -130,7 +143,7 @@ There is **no database**. Each game's content is one JSON file in `DATA_DIR` (`/
 
 Categories live here, **not** in the game's HTML — that's what lets `/admin/` create them without a deploy. `GAME_CONFIG.categories` is only the offline fallback.
 
-**Phrase text convention:** stored *without* the game's prefix, because the card renders `phraseLabel` above it. Yo Nunca reads `he mentido…` / `me he quedado…` under the label `YO NUNCA...`.
+**Phrase text convention:** stored *without* the game's prefix, because the card renders `phraseLabel` above it. Yo Nunca reads `he mentido…` / `me he quedado…` under the label `YO NUNCA...`. In games with `players` the text also carries `{1}`/`{2}` slots — see **Games with player names**.
 
 `api/store.js` owns all file access:
 

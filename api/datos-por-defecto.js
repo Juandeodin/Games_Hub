@@ -237,4 +237,67 @@ module.exports = {
     ],
   },
 
+  // Picolo usa HUECOS DE NOMBRE: {1}, {2}, {3}... El motor mete ahí un jugador
+  // distinto por número. Una frase con {1} y {2} necesita dos personas, y se
+  // descarta si en la partida no hay tantas.
+  'picolo': {
+    categorias: [
+      { id: 'suave', name: 'Suave', emoji: '🍺', desc: 'Para calentar. Apto para cualquier grupo.' },
+      { id: 'fiesta', name: 'Fiesta', emoji: '🎉', desc: 'Retos, castigos y caos. Aquí se bebe de verdad.' },
+      { id: 'picante', name: 'Picante +18', emoji: '🔥', desc: 'Solo para adultos. Contenido subido de tono.' },
+    ],
+    frases: [
+      // ── SUAVE ──
+      { texto: '{1} bebe un trago por cada letra de su nombre', categoria: 'suave' },
+      { texto: '{1} tiene que contar un secreto tonto o beber dos tragos', categoria: 'suave' },
+      { texto: '{1} y {2} no pueden decir «no» hasta la próxima frase. Quien falle, bebe', categoria: 'suave' },
+      { texto: '{1} elige a alguien de la mesa para que beba con él', categoria: 'suave' },
+      { texto: '{1} tiene que hablar solo en susurros durante las tres próximas frases', categoria: 'suave' },
+      { texto: 'Todo el mundo bebe menos {1}. Que disfrute el momento', categoria: 'suave' },
+      { texto: '{1} le hace una pregunta a {2}: si no contesta, bebe {2}', categoria: 'suave' },
+      { texto: '{1} tiene que decir tres cosas que le gustan de {2} o beber', categoria: 'suave' },
+      { texto: '{1} pone una canción y {2} tiene que adivinarla en diez segundos, o beben los dos', categoria: 'suave' },
+      { texto: 'A partir de ahora {1} se llama «Capitán». Quien no le llame así, bebe', categoria: 'suave' },
+      { texto: '{1} no puede reírse hasta la próxima frase. Si se ríe, bebe', categoria: 'suave' },
+      { texto: '{1} y {2} intercambian los sitios sin soltar el vaso', categoria: 'suave' },
+      { texto: '{1} imita a {2} hasta que alguien lo adivine. Si nadie acierta, bebe {1}', categoria: 'suave' },
+      { texto: '{1} cuenta la última mentira que dijo, o bebe dos tragos', categoria: 'suave' },
+      { texto: '{1} decide una norma nueva para toda la partida', categoria: 'suave' },
+
+      // ── FIESTA ──
+      { texto: '{1} tiene que bailarle a {2} hasta que acabe la canción', categoria: 'fiesta' },
+      { texto: '{1} bebe cada vez que {2} se ría, hasta nuevo aviso', categoria: 'fiesta' },
+      { texto: '{1} y {2} beben a la vez sin parar hasta que alguien de la mesa diga «basta»', categoria: 'fiesta' },
+      { texto: '{1} le da su vaso a {2} y bebe lo que {2} decida', categoria: 'fiesta' },
+      { texto: '{1} cuenta la peor borrachera de su vida. Si se salta detalles, bebe', categoria: 'fiesta' },
+      { texto: 'Un chupito para {1}, cortesía de {2}', categoria: 'fiesta' },
+      { texto: '{1} tiene el móvil de {2} hasta la próxima frase. Puede hacer lo que quiera con él', categoria: 'fiesta' },
+      { texto: '{1} manda un mensaje que le dicte {2} a quien {2} elija', categoria: 'fiesta' },
+      { texto: '{1} y {2} se retan a piedra, papel o tijera. El que pierda bebe tres tragos', categoria: 'fiesta' },
+      { texto: '{1} tiene que gritar algo vergonzoso por la ventana o beber cinco tragos', categoria: 'fiesta' },
+      { texto: '{1} bebe cada vez que alguien diga su nombre. Buena suerte', categoria: 'fiesta' },
+      { texto: '{1} hace de camarero de {2} hasta que acabe la ronda', categoria: 'fiesta' },
+      { texto: '{1} se sube a una silla y hace un brindis. Si no convence, bebe', categoria: 'fiesta' },
+      { texto: '{1} y {2} se cuentan lo que pensaban el uno del otro al conocerse', categoria: 'fiesta' },
+      { texto: '{1} elige: se bebe su vaso entero o lo hacen {2} y {3} a medias', categoria: 'fiesta' },
+
+      // ── PICANTE ──
+      { texto: '{1} le cuenta a {2} qué fue lo primero en lo que se fijó de él', categoria: 'picante' },
+      { texto: '{1} y {2} se intercambian una prenda de ropa o beben tres tragos cada uno', categoria: 'picante' },
+      { texto: '{1} tiene que decirle un piropo a {2} sin reírse. Si se ríe, bebe', categoria: 'picante' },
+      { texto: '{1} enseña la última foto de su galería o bebe cuatro tragos', categoria: 'picante' },
+      { texto: '{1} le dice a {2} con quién de la sala se iría de fiesta a solas', categoria: 'picante' },
+      { texto: '{1} cuenta el sitio más raro donde ha tenido algo, o bebe', categoria: 'picante' },
+      { texto: '{1} se sienta en las rodillas de {2} hasta la próxima frase', categoria: 'picante' },
+      { texto: '{1} le hace un masaje de un minuto a {2} o beben los dos', categoria: 'picante' },
+      { texto: '{1} tiene que confesar si alguna vez le ha gustado alguien de esta mesa', categoria: 'picante' },
+      { texto: '{1} le susurra algo al oído a {2}. Nadie más puede enterarse', categoria: 'picante' },
+      { texto: '{1} y {2} responden a la vez: ¿quién de los dos liga más? Si no coinciden, beben', categoria: 'picante' },
+      { texto: '{1} cuenta su peor cita. Si la mesa no se ríe, bebe otra vez', categoria: 'picante' },
+      { texto: '{1} le pone nota del 1 al 10 a {2} y tiene que justificarla', categoria: 'picante' },
+      { texto: '{1} lee en voz alta su último mensaje enviado o bebe cinco tragos', categoria: 'picante' },
+      { texto: '{1} elige a {2} o a {3} para darle un beso en la mejilla. Quien no sea elegido, bebe', categoria: 'picante' },
+    ],
+  },
+
 };

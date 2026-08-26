@@ -14,9 +14,15 @@
      apiEndpoint:       string  — URL GET de frases (?categorias=...)
      userPhrases:       object? — categoría local "Mis frases"; omitir para deshabilitar
        { id, name, emoji, desc, hint, placeholder }
+     players:           object? — pide nombres antes de jugar; omitir para deshabilitar
+       { min, max, title, hint, storageKey }
      categories: [{ id, name, emoji, desc }]
      fallback:   [{ texto, categoria }]  — frases offline
    }
+
+   HUECOS DE NOMBRE: con `players` activo, las frases pueden llevar {1}, {2},
+   {3}... El mismo número es siempre el mismo jugador dentro de una frase, y
+   números distintos son jugadores necesariamente distintos.
    ================================================================ */
 (function () {
   'use strict';
@@ -93,11 +99,94 @@
     saveMine(loadMine().filter(f => f.id !== id));
   }
 
+  // ── Jugadores ───────────────────────────────────────────────────
+  const PL          = C.players || null;
+  const PLAYERS_KEY = PL ? (PL.storageKey || 'jj_jugadores') : null;
+  const MIN_JUG     = PL ? (PL.min || 2)  : 0;
+  const MAX_JUG     = PL ? (PL.max || 12) : 0;
+  const NOMBRE_MAX  = 20;
+
+  // {1}, {2}, {3}... — hueco donde el motor mete un nombre.
+  const RE_HUECO = /\{(\d+)\}/g;
+
+  /** Números de hueco distintos que usa una frase. Su tamaño es el número
+   *  de jugadores DISTINTOS que hacen falta para poder mostrarla. */
+  function huecosDe(texto) {
+    const nums = new Set();
+    let m;
+    RE_HUECO.lastIndex = 0;
+    while ((m = RE_HUECO.exec(texto)) !== null) nums.add(m[1]);
+    return nums;
+  }
+
+  function loadJugadores() {
+    try {
+      const raw = localStorage.getItem(PLAYERS_KEY);
+      const list = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(list)) return [];
+      return list.filter(n => typeof n === 'string' && n.trim()).slice(0, MAX_JUG);
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function saveJugadores(list) {
+    try {
+      localStorage.setItem(PLAYERS_KEY, JSON.stringify(list));
+    } catch (_) { /* navegador sin almacenamiento: se juega igual */ }
+  }
+
+  /**
+   * Reparto justo: en vez de sortear un nombre por hueco (que deja a alguien
+   * fuera toda la partida por pura mala suerte), se va vaciando una bolsa
+   * barajada y solo se rebaraja al agotarse. Así todos salen un número
+   * parecido de veces.
+   */
+  let bolsa = [];
+
+  function sacarJugadores(n, jugadores) {
+    const elegidos = [];
+    const apartados = [];          // ya usados EN ESTA frase; vuelven al final
+    while (elegidos.length < n) {
+      if (!bolsa.length) bolsa = shuffle(jugadores);
+      const nombre = bolsa.pop();
+      if (elegidos.includes(nombre)) apartados.push(nombre);
+      else                           elegidos.push(nombre);
+    }
+    bolsa.push(...apartados);
+    return elegidos;
+  }
+
+  /** Asigna un nombre a cada hueco de cada frase del mazo. */
+  function repartirNombres(mazo, jugadores) {
+    bolsa = [];
+    mazo.forEach(f => {
+      const huecos = [...huecosDe(f.texto)];
+      if (!huecos.length) { f.asignacion = null; return; }
+      const nombres = sacarJugadores(huecos.length, jugadores);
+      f.asignacion = {};
+      huecos.forEach((h, i) => { f.asignacion[h] = nombres[i]; });
+    });
+  }
+
+  /** Texto de la frase con los huecos ya sustituidos, listo para innerHTML.
+   *  Se escapa primero: esc() no toca ni las llaves ni los dígitos, así que
+   *  la sustitución posterior sigue encontrando los huecos. */
+  function textoConNombres(frase) {
+    const seguro = esc(frase.texto);
+    if (!frase.asignacion) return seguro;
+    return seguro.replace(RE_HUECO, (hueco, num) => {
+      const nombre = frase.asignacion[num];
+      return nombre ? `<span class="jugador">${esc(nombre)}</span>` : hueco;
+    });
+  }
+
   // ── Construir UI ────────────────────────────────────────────────
   function buildUI() {
     document.body.style.setProperty('--game-bg', C.bgColor || '#7c3aed');
 
     const hasMine = !!UP;
+    const hasPlayers = !!PL;
 
     document.body.innerHTML = `
       <div id="screen-inicio" class="screen active">
@@ -108,10 +197,24 @@
         ${hasMine ? '<button class="btn btn-secondary btn-full" id="btn-ir-mis">✏️ MIS FRASES</button>' : ''}
       </div>
 
+      ${hasPlayers ? `
+      <div id="screen-jugadores" class="screen">
+        <h2 class="section-title">${PL.title || '¿Quiénes juegan?'}</h2>
+        ${PL.hint ? `<p class="screen-sub">${PL.hint}</p>` : ''}
+        <div class="card">
+          <div id="player-list"></div>
+          <p id="jug-error" class="send-error" style="display:none"></p>
+          <button class="btn btn-secondary btn-full" id="btn-add-jugador">➕ AÑADIR JUGADOR</button>
+        </div>
+        <button class="btn btn-primary btn-full" id="btn-jugadores-next" disabled>SIGUIENTE →</button>
+        <button class="btn btn-ghost" id="btn-jugadores-back">← Volver</button>
+      </div>` : ''}
+
       <div id="screen-cats" class="screen">
         <h2 class="section-title">¿Qué nivel?</h2>
         <p class="screen-sub">Activa los tipos de frases que queréis</p>
         <div class="toggles" id="toggles"></div>
+        <p id="cats-error" class="send-error" style="display:none"></p>
         <button id="btn-jugar" class="btn btn-primary btn-full" disabled>🎲 ¡A JUGAR!</button>
         <button class="btn btn-ghost" id="btn-cats-back">← Volver</button>
       </div>
@@ -127,6 +230,7 @@
         <div class="offline-notice" id="offline-notice">⚠️ Modo sin conexión — usando frases de muestra</div>
         <button class="btn btn-primary btn-full" id="btn-siguiente">SIGUIENTE →</button>
         <button class="btn btn-ghost" id="btn-game-cats">↩ Cambiar categorías</button>
+        ${hasPlayers ? '<button class="btn btn-ghost" id="btn-game-jugadores">👥 Cambiar jugadores</button>' : ''}
       </div>
 
       <div id="screen-fin" class="screen">
@@ -164,6 +268,7 @@
   let frases     = [];
   let currentIdx = 0;
   let activeCats = new Set();
+  let jugadores  = [];   // nombres validados de la pantalla de jugadores
 
   // ── Pantallas ───────────────────────────────────────────────────
   function showScreen(id) {
@@ -279,7 +384,25 @@
       }
     }
 
-    frases = shuffle([...remotas, ...mias]);
+    let mazo = shuffle([...remotas, ...mias]);
+
+    if (PL) {
+      // Una frase con {1} {2} {3} necesita tres personas distintas: con menos
+      // jugadores no hay forma de mostrarla sin repetir a alguien, así que se
+      // descarta. Se aplica también a "Mis frases", que van ya mezcladas.
+      const cabe = mazo.filter(f => huecosDe(f.texto).size <= jugadores.length);
+      if (!cabe.length && mazo.length) {
+        mostrarErrorCats(
+          `Con ${jugadores.length} jugador${jugadores.length === 1 ? '' : 'es'} no hay frases ` +
+          `suficientes en estas categorías. Añade más gente o activa otra categoría.`
+        );
+        return;
+      }
+      mazo = cabe;
+      repartirNombres(mazo, jugadores);
+    }
+
+    frases = mazo;
     currentIdx = 0;
     renderPhrase();
     showScreen('screen-game');
@@ -289,7 +412,10 @@
     if (!frases.length) { showScreen('screen-fin'); return; }
     const total   = frases.length;
     const current = currentIdx + 1;
-    $('phrase-text').textContent  = frases[currentIdx].texto;
+    const frase   = frases[currentIdx];
+    // innerHTML, no textContent: los nombres van envueltos en <span>. El texto
+    // se escapa dentro de textoConNombres().
+    $('phrase-text').innerHTML    = PL ? textoConNombres(frase) : esc(frase.texto);
     $('progress-bar').style.width = `${(current / total) * 100}%`;
   }
 
@@ -301,9 +427,120 @@
 
   function restart() {
     frases = shuffle(frases);
+    // Se reparten los nombres otra vez: la segunda vuelta no debe repetir los
+    // mismos emparejamientos que la primera.
+    if (PL) repartirNombres(frases, jugadores);
     currentIdx = 0;
     renderPhrase();
     showScreen('screen-game');
+  }
+
+  // ── Jugadores — pantalla ─────────────────────────────────────────
+  function mostrarErrorCats(msg) {
+    const el = $('cats-error');
+    if (!el) return;
+    el.textContent   = msg;
+    el.style.display = 'block';
+  }
+
+  function limpiarErrorCats() {
+    const el = $('cats-error');
+    if (el) el.style.display = 'none';
+  }
+
+  /** Nombres escritos ahora mismo: recortados, sin vacíos y sin repetidos
+   *  (ignorando mayúsculas, para que "ana" y "Ana" no sean dos personas). */
+  function nombresEscritos() {
+    const vistos = new Set();
+    const limpios = [];
+    document.querySelectorAll('#player-list input').forEach(input => {
+      const n = input.value.trim();
+      if (!n) return;
+      const clave = n.toLowerCase();
+      if (vistos.has(clave)) return;
+      vistos.add(clave);
+      limpios.push(n);
+    });
+    return limpios;
+  }
+
+  function hayRepetidos() {
+    const escritos = [];
+    document.querySelectorAll('#player-list input').forEach(input => {
+      const n = input.value.trim().toLowerCase();
+      if (n) escritos.push(n);
+    });
+    return new Set(escritos).size !== escritos.length;
+  }
+
+  function refreshJugadores() {
+    const nombres = nombresEscritos();
+    const errEl   = $('jug-error');
+
+    if (hayRepetidos()) {
+      errEl.textContent   = 'Hay dos jugadores con el mismo nombre.';
+      errEl.style.display = 'block';
+    } else {
+      errEl.style.display = 'none';
+    }
+
+    $('btn-add-jugador').disabled   = document.querySelectorAll('#player-list input').length >= MAX_JUG;
+    $('btn-jugadores-next').disabled = nombres.length < MIN_JUG || hayRepetidos();
+  }
+
+  function filaJugador(nombre) {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    row.innerHTML = `
+      <input type="text" maxlength="${NOMBRE_MAX}" placeholder="Nombre" aria-label="Nombre del jugador" />
+      <button class="btn btn-mini btn-danger" type="button" data-quitar aria-label="Quitar jugador">✕</button>
+    `;
+    row.querySelector('input').value = nombre || '';
+    return row;
+  }
+
+  function renderJugadores(nombres) {
+    const cont = $('player-list');
+    cont.innerHTML = '';
+    // Sin nada guardado se pintan las filas mínimas, para que se vea qué hacer.
+    const iniciales = nombres.length ? nombres : new Array(MIN_JUG).fill('');
+    iniciales.slice(0, MAX_JUG).forEach(n => cont.appendChild(filaJugador(n)));
+    refreshJugadores();
+  }
+
+  function initJugadores() {
+    if (!PL) return;
+
+    const cont = $('player-list');
+    renderJugadores(loadJugadores());
+
+    cont.addEventListener('input', refreshJugadores);
+
+    cont.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-quitar]');
+      if (!btn) return;
+      // Nunca se baja de una fila: sin ninguna no habría dónde escribir.
+      if (cont.querySelectorAll('.player-row').length > 1) btn.closest('.player-row').remove();
+      else                                                 btn.closest('.player-row').querySelector('input').value = '';
+      refreshJugadores();
+    });
+
+    $('btn-add-jugador').addEventListener('click', () => {
+      if (cont.querySelectorAll('input').length >= MAX_JUG) return;
+      const row = filaJugador('');
+      cont.appendChild(row);
+      row.querySelector('input').focus();
+      refreshJugadores();
+    });
+
+    $('btn-jugadores-next').addEventListener('click', () => {
+      jugadores = nombresEscritos();
+      if (jugadores.length < MIN_JUG) return;
+      saveJugadores(jugadores);
+      goToCats();
+    });
+
+    $('btn-jugadores-back').addEventListener('click', () => showScreen('screen-inicio'));
   }
 
   // ── "Mis frases" — pantalla ──────────────────────────────────────
@@ -365,19 +602,30 @@
 
   // ── Eventos ─────────────────────────────────────────────────────
   async function goToCats() {
+    limpiarErrorCats();
     showScreen('screen-cats');
     await togglesListos;      // resuelto ya en la práctica: se lanza al cargar
     refreshMineToggle();
   }
 
+  /** Con jugadores, el flujo es inicio → jugadores → categorías. */
+  function goToStart() {
+    if (PL) { showScreen('screen-jugadores'); refreshJugadores(); }
+    else    { goToCats(); }
+  }
+
   function wireEvents() {
-    $('btn-empezar').addEventListener('click',    goToCats);
+    $('btn-empezar').addEventListener('click',    goToStart);
     $('btn-jugar').addEventListener('click',      startGame);
-    $('btn-cats-back').addEventListener('click',  () => showScreen('screen-inicio'));
+    $('btn-cats-back').addEventListener('click',  () => showScreen(PL ? 'screen-jugadores' : 'screen-inicio'));
     $('btn-siguiente').addEventListener('click',  nextPhrase);
     $('btn-game-cats').addEventListener('click',  goToCats);
     $('btn-otra-ronda').addEventListener('click', restart);
     $('btn-fin-cats').addEventListener('click',   goToCats);
+
+    if (PL) {
+      $('btn-game-jugadores').addEventListener('click', () => showScreen('screen-jugadores'));
+    }
 
     if (UP) {
       $('btn-ir-mis').addEventListener('click',   () => showScreen('screen-mis'));
@@ -389,6 +637,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     buildUI();
     wireEvents();
+    initJugadores();
     initMisFrases();
     initAds();
     // Se pide ya, mientras el jugador lee la pantalla de inicio, para que

@@ -24,7 +24,7 @@
   {
     "id": "red-flag",
     "title": "Red Flag",
-    "description": "Que salgan a relucir las las Red Flags de tus amigos",
+    "description": "Que salgan a relucir las Red Flags de tus amigos",
     "emoji": "🚩",
     "color": "#ff3b3b",
     "type": "internal",
@@ -40,6 +40,17 @@
     "color": "#1e90ff",
     "type": "internal",
     "link": "games/es-un-10-pero/index.html",
+    "badge": "NUEVO",
+    "category": "Fiesta"
+  },
+  {
+    "id": "picolo",
+    "title": "Picolo",
+    "description": "Escribid vuestros nombres y el juego decide quién bebe, quién reta y a quién",
+    "emoji": "🍹",
+    "color": "#00b894",
+    "type": "internal",
+    "link": "games/picolo/index.html",
     "badge": "NUEVO",
     "category": "Fiesta"
   },

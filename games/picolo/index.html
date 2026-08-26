@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Picolo — Juegos de Juan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/ads.css" />
+  <link rel="stylesheet" href="../../css/game-engine.css?v=4" />
+  <script>
+  window.GAME_CONFIG = {
+    id:          'picolo',
+    title:       'PICOLO',
+    bgColor:     '#00b894',
+    phraseLabel: '',
+    intro:       'Escribid vuestros nombres y el juego reparte las órdenes: <b>quién bebe, quién reta a quién y quién se queda con la norma hasta que vuelva a tocarle</b>.<br><br>Quien no quiera o no pueda cumplir su reto, debe beber lo que el resto considere',
+    endIcon:     '🍹',
+    endText:     '¡Se acabaron\nlas órdenes!',
+    endSubtext:  'Otra ronda y le tocará a otro…',
+    apiEndpoint:    '/api/frases?juego=picolo',
+    configEndpoint: '/api/config?juego=picolo',
+    players: {
+      min:   2,
+      max:   12,
+      title: '¿Quiénes juegan?',
+      hint:  'Mínimo 2 jugadores. Se guardan en este navegador para la próxima.',
+    },
+    userPhrases: {
+      id:          'mis',
+      name:        'Mis frases',
+      emoji:       '✏️',
+      desc:        'Las órdenes que has creado tú',
+      hint:        'usa {1} y {2} donde quieras que salga un nombre',
+      placeholder: '{1} tiene que imitar a {2} hasta que alguien lo adivine',
+    },
+    categories: [
+      { id: 'suave',   name: 'Suave',       emoji: '🍺', desc: 'Para calentar. Apto para cualquier grupo.'       },
+      { id: 'fiesta',  name: 'Fiesta',      emoji: '🎉', desc: 'Retos, castigos y caos. Aquí se bebe de verdad.' },
+      { id: 'picante', name: 'Picante +18', emoji: '🔥', desc: 'Solo para adultos. Contenido subido de tono.'    },
+    ],
+    fallback: [
+      { texto: '{1} bebe un trago por cada letra de su nombre',                     categoria: 'suave'   },
+      { texto: '{1} tiene que contar un secreto tonto o beber dos tragos',          categoria: 'suave'   },
+      { texto: '{1} y {2} no pueden decir "no" hasta la próxima frase',             categoria: 'suave'   },
+      { texto: '{1} tiene que bailarle a {2} hasta que acabe la canción',           categoria: 'fiesta'  },
+      { texto: '{1} bebe cada vez que {2} se ría, hasta nuevo aviso',               categoria: 'fiesta'  },
+      { texto: '{1} elige a alguien: esa persona y {2} beben juntos',               categoria: 'fiesta'  },
+      { texto: '{1} le cuenta a {2} qué fue lo primero que pensó al conocerle',     categoria: 'picante' },
+      { texto: '{1} y {2} se intercambian una prenda de ropa o beben tres tragos',  categoria: 'picante' },
+      { texto: '{1} tiene que decirle un piropo a {2} sin reírse',                  categoria: 'picante' },
+    ],
+  };
+  </script>
+  <script src="../../js/ads.js" defer></script>
+  <script src="../../js/game-engine.js?v=4" defer></script>
+</head>
+<body></body>
+</html>
