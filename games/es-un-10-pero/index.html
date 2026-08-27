@@ -14,7 +14,9 @@
     id:          'es-un-10-pero',
     title:       'ES UN 10\nPERO',
     bgColor:     '#1e90ff',
-    phraseLabel: '🔟 ES UN 10 PERO...',
+    phraseLabel: 'ES UN {n} PERO...',
+    // {n} lo pone cada frase con un prefijo [7]; sin prefijo, un 10 de siempre.
+    labelDefault: '10',
     intro:       'Sale una frase y cada jugador dice <b>del 1 al 10</b> qué nota le quedaría a esa persona que es un 10 pero tiene ese "defecto".<br><br><i>Se puede jugar de distintas maneras:</i> por turnos diciendo la nota en voz alta, o a la vez contando hasta tres — el que dé la nota más alta y más baja se explican.<br>',
     endIcon:     '🔟',
     endText:     '¡Se acabaron\nlos peros!',
@@ -26,7 +28,7 @@
       name:        'Mis frases',
       emoji:       '✏️',
       desc:        'Los "peros" que has creado tú',
-      hint:        'escribe el "pero" tal cual, sin repetir «es un 10 pero»',
+      hint:        'escribe el "pero" tal cual, sin repetir «es un 10 pero». Para cambiar la nota, empieza por [7]',
       placeholder: 'Pone piña en la pizza',
     },
     categories: [
@@ -38,17 +40,17 @@
       { texto: 'Pone piña en la pizza',                          categoria: 'manias'  },
       { texto: 'Manda notas de voz de cinco minutos',            categoria: 'manias'  },
       { texto: 'Mastica con la boca abierta',                    categoria: 'manias'  },
-      { texto: 'No se lava las manos al salir del baño',         categoria: 'fuerte'  },
-      { texto: 'Habla mal de todo el mundo a sus espaldas',      categoria: 'fuerte'  },
+      { texto: '[4] No se lava las manos al salir del baño',     categoria: 'fuerte'  },
+      { texto: '[6] Habla mal de todo el mundo a sus espaldas',  categoria: 'fuerte'  },
       { texto: 'No ha leído un libro en su vida y presume',      categoria: 'fuerte'  },
-      { texto: 'Se duerme siempre justo después',                categoria: 'picante' },
+      { texto: '[8] Se duerme siempre justo después',            categoria: 'picante' },
       { texto: 'Tiene fotos de sus ex guardadas en el móvil',    categoria: 'picante' },
       { texto: 'Cuenta sus intimidades a todo su grupo',         categoria: 'picante' },
     ],
   };
   </script>
   <script src="../../js/ads.js" defer></script>
-  <script src="../../js/game-engine.js?v=4" defer></script>
+  <script src="../../js/game-engine.js?v=5" defer></script>
 </head>
 <body></body>
 </html>

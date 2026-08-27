@@ -177,6 +177,9 @@ module.exports = {
     ],
   },
 
+  // "Es un 10 pero" usa NOTA POR FRASE: una frase puede empezar por [7] para
+  // que la etiqueta diga "ES UN 7 PERO..." en vez del 10 por defecto. El motor
+  // quita el prefijo antes de mostrar el texto.
   'es-un-10-pero': {
     categorias: [
       { id: 'manias', name: 'Manías', emoji: '🤏', desc: 'Rarezas del día a día. Para todos los públicos.' },
@@ -186,7 +189,7 @@ module.exports = {
     frases: [
       // ── MANÍAS ──
       { texto: 'Pone piña en la pizza', categoria: 'manias' },
-      { texto: 'Manda notas de voz de cinco minutos', categoria: 'manias' },
+      { texto: '[8] Manda notas de voz de cinco minutos', categoria: 'manias' },
       { texto: 'Mastica con la boca abierta', categoria: 'manias' },
       { texto: 'Pone el altavoz del móvil en el transporte público', categoria: 'manias' },
       { texto: 'Se levanta a la primera alarma y te despierta a ti', categoria: 'manias' },
@@ -197,20 +200,20 @@ module.exports = {
       { texto: 'Cuenta el final de las series sin avisar', categoria: 'manias' },
       { texto: 'Solo escucha las mismas cinco canciones', categoria: 'manias' },
       { texto: 'No se quita nunca la gorra, ni para dormir', categoria: 'manias' },
-      { texto: 'Llega diez minutos tarde a absolutamente todo', categoria: 'manias' },
+      { texto: '[9] Llega diez minutos tarde a absolutamente todo', categoria: 'manias' },
       { texto: 'Contesta a los audios con audios más largos', categoria: 'manias' },
       { texto: 'Se ríe de sus propios chistes antes de contarlos', categoria: 'manias' },
 
       // ── DEAL BREAKERS ──
-      { texto: 'No se lava las manos al salir del baño', categoria: 'fuerte' },
+      { texto: '[4] No se lava las manos al salir del baño', categoria: 'fuerte' },
       { texto: 'Habla mal de todo el mundo a sus espaldas', categoria: 'fuerte' },
       { texto: 'Es maleducado con los camareros', categoria: 'fuerte' },
       { texto: 'Nunca ha pedido perdón en su vida', categoria: 'fuerte' },
-      { texto: 'No devuelve el dinero que le prestas', categoria: 'fuerte' },
+      { texto: '[5] No devuelve el dinero que le prestas', categoria: 'fuerte' },
       { texto: 'Sigue viviendo con sus padres y no piensa moverse', categoria: 'fuerte' },
       { texto: 'Miente aunque no haga falta', categoria: 'fuerte' },
       { texto: 'No tiene ni un solo amigo de antes de este año', categoria: 'fuerte' },
-      { texto: 'Se cree que la Tierra es plana', categoria: 'fuerte' },
+      { texto: '[3] Se cree que la Tierra es plana', categoria: 'fuerte' },
       { texto: 'No sabe estar solo ni cinco minutos', categoria: 'fuerte' },
       { texto: 'Se enfada en silencio y espera a que lo adivines', categoria: 'fuerte' },
       { texto: 'Deja tirado a todo el mundo cuando aparece alguien mejor', categoria: 'fuerte' },
@@ -224,10 +227,10 @@ module.exports = {
       { texto: 'Cuenta sus intimidades a todo su grupo', categoria: 'picante' },
       { texto: 'Presume de su lista de conquistas en la primera cita', categoria: 'picante' },
       { texto: 'No se quita los calcetines ni en la cama', categoria: 'picante' },
-      { texto: 'Compara en la cama con otra persona', categoria: 'picante' },
+      { texto: '[2] Compara en la cama con otra persona', categoria: 'picante' },
       { texto: 'Nunca apaga la luz ni la tele', categoria: 'picante' },
       { texto: 'Habla de su ex justo en el peor momento', categoria: 'picante' },
-      { texto: 'Tiene las apps de citas todavía instaladas', categoria: 'picante' },
+      { texto: '[6] Tiene las apps de citas todavía instaladas', categoria: 'picante' },
       { texto: 'Se levanta y se va a su casa esa misma noche', categoria: 'picante' },
       { texto: 'Solo escribe a partir de las tres de la mañana', categoria: 'picante' },
       { texto: 'Pide opinión sobre su rendimiento nada más terminar', categoria: 'picante' },

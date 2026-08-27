@@ -95,7 +95,8 @@ Card/phrase-style games (Yo Nunca, Quién es más probable, Verdad o Reto…) al
 | `id` | string | Game slug — used as the localStorage key for "Mis frases" (`jj_misfrases_<id>`) |
 | `title` | string | Game title (`\n` → `<br>`) |
 | `bgColor` | string | Body background color |
-| `phraseLabel` | string | Label above the phrase card (e.g. `"YO NUNCA HE..."`) |
+| `phraseLabel` | string | Label above the phrase card (e.g. `"YO NUNCA HE..."`). May contain the slot `{n}`, which each phrase can fill — see **Per-phrase label number** |
+| `labelDefault` | string? | Value for `{n}` when a phrase carries no number of its own |
 | `intro` | string | Home screen subtitle (HTML allowed) |
 | `endIcon` | string | Emoji on end screen |
 | `endText` | string | End screen heading (`\n` → `<br>`) |
@@ -106,6 +107,20 @@ Card/phrase-style games (Yo Nunca, Quién es más probable, Verdad o Reto…) al
 | `players` | `{min, max, title, hint, storageKey}`? | Asks for player names before playing and substitutes them into the phrases — omit for the classic flow. See **Games with player names** below |
 | `categories` | `{id, name, emoji, desc}[]` | **Offline fallback only.** The live categories come from `configEndpoint`, so they can be edited in `/admin/` without touching code. These are used when the API is unreachable |
 | `fallback` | `{texto, categoria}[]` | Offline fallback phrases |
+
+### Per-phrase label number
+
+"Es un 10 pero" is not always a 10 — some phrases read *"es un 4 pero…"*. `phraseLabel` therefore carries a `{n}` slot (`'ES UN {n} PERO...'`) and a phrase can override it with a **leading `[7]`**:
+
+```json
+{ "texto": "[4] No se lava las manos al salir del baño", "categoria": "fuerte" }
+```
+
+The engine strips the prefix before rendering the text and rewrites the label to `ES UN 4 PERO...`; a phrase without a prefix falls back to `labelDefault`. Like the `{1}` name slots, this is a **plain text convention** — `api/store.js` neither knows nor validates it, so `/admin/` and "Mis frases" edit these phrases like any other.
+
+- Nothing happens unless `phraseLabel` contains `{n}`. Without it the label is static markup exactly as before, and a phrase starting with `[…]` is left untouched — that's the acceptance criterion when the engine is touched.
+- The prefix matches only 1–3 characters between brackets **at the start** of the text, so a real `[algo]` mid-phrase is never eaten.
+- The label is written with `textContent` (not `innerHTML`) once a `{n}` is in play, so no HTML is allowed in `phraseLabel` for those games.
 
 ### Games with player names
 
@@ -143,7 +158,7 @@ There is **no database**. Each game's content is one JSON file in `DATA_DIR` (`/
 
 Categories live here, **not** in the game's HTML — that's what lets `/admin/` create them without a deploy. `GAME_CONFIG.categories` is only the offline fallback.
 
-**Phrase text convention:** stored *without* the game's prefix, because the card renders `phraseLabel` above it. Yo Nunca reads `he mentido…` / `me he quedado…` under the label `YO NUNCA...`. In games with `players` the text also carries `{1}`/`{2}` slots — see **Games with player names**.
+**Phrase text convention:** stored *without* the game's prefix, because the card renders `phraseLabel` above it. Yo Nunca reads `he mentido…` / `me he quedado…` under the label `YO NUNCA...`. In games with `players` the text also carries `{1}`/`{2}` slots — see **Games with player names** — and in games whose label has a `{n}` slot it may start with `[7]` — see **Per-phrase label number**.
 
 `api/store.js` owns all file access:
 

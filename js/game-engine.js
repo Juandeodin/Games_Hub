@@ -6,7 +6,10 @@
      id:                string  — identificador del juego (clave de localStorage)
      title:             string  — título del juego (\n → <br>)
      bgColor:           string  — color de fondo CSS
-     phraseLabel:       string  — texto sobre la frase (ej. "YO NUNCA HE...")
+     phraseLabel:       string  — texto sobre la frase (ej. "YO NUNCA HE...").
+                                 Puede llevar el hueco {n}: cada frase decide
+                                 qué va ahí (ver NOTA POR FRASE)
+     labelDefault:      string? — valor de {n} cuando la frase no trae ninguno
      intro:             string  — subtítulo en pantalla inicio (HTML permitido)
      endIcon:           string  — emoji en pantalla de fin
      endText:           string  — título pantalla de fin (\n → <br>)
@@ -23,6 +26,11 @@
    HUECOS DE NOMBRE: con `players` activo, las frases pueden llevar {1}, {2},
    {3}... El mismo número es siempre el mismo jugador dentro de una frase, y
    números distintos son jugadores necesariamente distintos.
+
+   NOTA POR FRASE: si `phraseLabel` lleva el hueco {n}, una frase puede empezar
+   por [7] para que la etiqueta diga "ES UN 7 PERO..." en vez del 10 de siempre.
+   El prefijo se quita del texto antes de mostrarlo. Sin prefijo se usa
+   `labelDefault`. Es solo una convención de texto: el servidor no la conoce.
    ================================================================ */
 (function () {
   'use strict';
@@ -99,6 +107,26 @@
     saveMine(loadMine().filter(f => f.id !== id));
   }
 
+  // ── Nota de la frase ────────────────────────────────────────────
+  // Prefijo [7] al principio del texto. Se limita a 1-3 caracteres sin
+  // corchetes para no tragarse un "[...]" que la frase use de verdad.
+  const RE_NOTA        = /^\s*\[([^\[\]\n]{1,3})\]\s*/;
+  const LABEL_TPL      = C.phraseLabel || '';
+  const LABEL_CON_NOTA = /\{n\}/.test(LABEL_TPL);
+  const LABEL_DEFAULT  = C.labelDefault != null ? String(C.labelDefault) : '';
+
+  /** Separa el prefijo [7] del resto del texto. */
+  function partirNota(texto) {
+    const t = texto || '';
+    const m = LABEL_CON_NOTA ? t.match(RE_NOTA) : null;
+    if (!m) return { nota: LABEL_DEFAULT, texto: t };
+    return { nota: m[1].trim() || LABEL_DEFAULT, texto: t.slice(m[0].length) };
+  }
+
+  function etiquetaCon(nota) {
+    return LABEL_TPL.replace(/\{n\}/g, nota);
+  }
+
   // ── Jugadores ───────────────────────────────────────────────────
   const PL          = C.players || null;
   const PLAYERS_KEY = PL ? (PL.storageKey || 'jj_jugadores') : null;
@@ -172,8 +200,8 @@
   /** Texto de la frase con los huecos ya sustituidos, listo para innerHTML.
    *  Se escapa primero: esc() no toca ni las llaves ni los dígitos, así que
    *  la sustitución posterior sigue encontrando los huecos. */
-  function textoConNombres(frase) {
-    const seguro = esc(frase.texto);
+  function textoConNombres(frase, texto) {
+    const seguro = esc(texto);
     if (!frase.asignacion) return seguro;
     return seguro.replace(RE_HUECO, (hueco, num) => {
       const nombre = frase.asignacion[num];
@@ -224,7 +252,7 @@
           <div class="progress-bar" id="progress-bar"></div>
         </div>
         <div class="card phrase-card">
-          ${C.phraseLabel ? `<span class="phrase-label">${C.phraseLabel}</span>` : ''}
+          ${C.phraseLabel ? `<span class="phrase-label" id="phrase-label">${LABEL_CON_NOTA ? esc(etiquetaCon(LABEL_DEFAULT)) : C.phraseLabel}</span>` : ''}
           <p class="phrase-text" id="phrase-text"></p>
         </div>
         <div class="offline-notice" id="offline-notice">⚠️ Modo sin conexión — usando frases de muestra</div>
@@ -413,9 +441,14 @@
     const total   = frases.length;
     const current = currentIdx + 1;
     const frase   = frases[currentIdx];
+    const { nota, texto } = partirNota(frase.texto);
+    if (LABEL_CON_NOTA) {
+      const label = $('phrase-label');
+      if (label) label.textContent = etiquetaCon(nota);
+    }
     // innerHTML, no textContent: los nombres van envueltos en <span>. El texto
     // se escapa dentro de textoConNombres().
-    $('phrase-text').innerHTML    = PL ? textoConNombres(frase) : esc(frase.texto);
+    $('phrase-text').innerHTML    = PL ? textoConNombres(frase, texto) : esc(texto);
     $('progress-bar').style.width = `${(current / total) * 100}%`;
   }
 
